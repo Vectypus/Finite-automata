@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 typedef struct fa {
-    char** transTable;
+    char*** transTable;
     char* init;
     char* term;
 } FA;
