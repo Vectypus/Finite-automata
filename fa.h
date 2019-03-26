@@ -6,6 +6,8 @@
 
 typedef struct fa {
     char*** transTable;
+    int nbLin;
+    int nbCol;
     char* init;
     char* term;
 } FA;

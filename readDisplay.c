@@ -31,10 +31,11 @@ FA* readAutomaton(char* filename){
     file = fopen(filename, "r");
 
     if(file != NULL){
+        // Read file
         fgets(alpha, 100, file);
-        int nbCol = strlen(alpha)/2 + 1;
+        fa->nbCol = strlen(alpha)/2 + 1;
         fgets(states, 100, file);
-        int nbLin = strlen(states)/2 + 1;
+        fa->nbLin = strlen(states)/2 + 1;
         fgets(transitions, 1000, file);
         fgets(init, 50, file);
         int nbInit = strlen(init)/2;
@@ -42,32 +43,28 @@ FA* readAutomaton(char* filename){
         int nbTerm = strlen(term)/2;
         fclose(file);
 
-        fa->transTable = malloc(nbLin*sizeof(char**));
-        for(int i = 0; i <= nbLin; i++){
-            fa->transTable[i] = malloc(nbCol*sizeof(char*));
-            for(int j = 0; j <= nbCol; j++){
-                if((i == 0 && j == 0) || i == nbLin || j == nbCol){
-                    fa->transTable[i][j] = NULL;
-                }
-                else{
-                    fa->transTable[i][j] = malloc(10*sizeof(char));
-                    fa->transTable[i][j][0] = '\0';
-                }
+        // Initialize the table
+        fa->transTable = malloc(fa->nbLin*sizeof(char**));
+        for(int i = 0; i < fa->nbLin; i++){
+            fa->transTable[i] = malloc(fa->nbCol*sizeof(char*));
+            for(int j = 0; j < fa->nbCol; j++){
+                fa->transTable[i][j] = malloc(10*sizeof(char));
+                fa->transTable[i][j][0] = '\0';
             }
         }
 
-        for(int i = 1; i < nbCol; i++){
+        // Fill alphabet
+        for(int i = 1; i < fa->nbCol; i++){
             fa->transTable[0][i][0] = alpha[(i-1)*2];
             fa->transTable[0][i][1] = '\0';
         }
-        fa->transTable[0][nbCol] = NULL;
-        for(int i = 1; i < nbLin; i++){
+        // Fill states
+        for(int i = 1; i < fa->nbLin; i++){
             fa->transTable[i][0][0] = states[(i-1)*2];
             fa->transTable[i][0][1] = '\0';
         }
-        fa->transTable[nbLin][0] = NULL;
-
-        int i, j = 0;
+        // Fill transitions
+        int i = 0, j = 0;
         char state, trans;
         while(transitions[i] != '\n'){
             if(i != 0)
@@ -81,13 +78,13 @@ FA* readAutomaton(char* filename){
             fa->transTable[searchLin(fa, state)][searchCol(fa, trans)][j] = transitions[i++];
             fa->transTable[searchLin(fa, state)][searchCol(fa, trans)][j+1] = '\0';
         }
-
-        for(int i = 1; i <= nbInit; i++){
-            fa->init[i-1] = init[(i-1)*2];
+        // Fill initial and terminal states
+        for(int i = 0; i < nbInit; i++){
+            fa->init[i] = init[i*2];
         }
         fa->init[nbInit] = '\0';
-        for(int i = 1; i <= nbTerm; i++){
-            fa->term[i-1] = term[(i-1)*2];
+        for(int i = 0; i < nbTerm; i++){
+            fa->term[i] = term[i*2];
         }
         fa->term[nbTerm] = '\0';
     }
@@ -99,36 +96,34 @@ FA* readAutomaton(char* filename){
 }
 
 void displayAutomaton(FA* fa){
-    int i = 0;
+    if(fa){
+        int i = 0;
 
-    printf("Initial states: ");
-    while(fa->init[i] != '\0'){
-        printf("%c ", fa->init[i++]);
-    }
-
-    printf("\nTerminal states: ");
-    i = 0;
-    while(fa->term[i] != '\0'){
-        printf("%c ", fa->term[i++]);
-    }
-
-    i = 0;
-    int j = 1;
-    printf("\n\nTransition table:\n  ");
-    while(fa->transTable[i][j] != NULL){
-        int k = 0;
-        while(fa->transTable[i][j][k] != '\0'){
-            if(i == 0)
-                printf(" ");
-            printf("%c ", fa->transTable[i][j][k]);
-            k++;
+        printf("Initial states: ");
+        while(fa->init[i] != '\0'){
+            printf("%c ", fa->init[i++]);
         }
-        j++;
-        printf("  ");
-        if(fa->transTable[i][j] == NULL){
-            i++;
-            j = 0;
-            printf("\n");
+
+        printf("\nTerminal states: ");
+        i = 0;
+        while(fa->term[i] != '\0'){
+            printf("%c ", fa->term[i++]);
+        }
+
+        int k;
+        printf("\n\nTransition table:\n");
+        for(int i = 0; i < fa->nbLin; i++){
+            for(int j = 0; j < fa->nbCol; j++){
+                k = 0;
+                while(fa->transTable[i][j][k] != '\0'){
+                    printf("%c ", fa->transTable[i][j][k]);
+                    k++;
+                }
+                printf("\t");
+                if(j == fa->nbCol-1){
+                    printf("\n");
+                }
+            }
         }
     }
 }
