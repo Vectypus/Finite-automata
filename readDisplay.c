@@ -46,8 +46,8 @@ FA* readAutomaton(char* filename){
         // Initialize the table
         fa->transTable = malloc((fa->nbStates+1)*sizeof(int**));
         for(int i = 0; i <= fa->nbStates; i++){
-            fa->transTable[i] = malloc((fa->nbAlpha+1)*sizeof(int*));
-            for(int j = 0; j <= fa->nbAlpha; j++){
+            fa->transTable[i] = malloc((fa->nbAlpha+2)*sizeof(int*));
+            for(int j = 0; j <= fa->nbAlpha+1; j++){
                 fa->transTable[i][j] = malloc((fa->nbStates+1)*sizeof(int));
                 fa->transTable[i][j][0] = 0;
             }
@@ -57,6 +57,7 @@ FA* readAutomaton(char* filename){
         for(int i = 1; i <= fa->nbAlpha; i++){
             fa->transTable[0][i][0] = 96+i;
         }
+        fa->transTable[0][fa->nbAlpha+1][0] = 42;
 
         // Fill states
         for(int i = 1; i <= fa->nbStates; i++){
@@ -97,7 +98,7 @@ void displayAutomaton(FA* fa){
 
         printf("\n\nTransition table:\n");
         for(int i = 0; i <= fa->nbStates; i++){
-            for(int j = 0; j <= fa->nbAlpha; j++){
+            for(int j = 0; j <= fa->nbAlpha+1; j++){
                 if(i != 0 || j != 0){
                     if(i == 0){
                         printf("%c ", fa->transTable[i][j][0]);
@@ -106,13 +107,16 @@ void displayAutomaton(FA* fa){
                         printf("%d ", fa->transTable[i][j][0]);
                     }
                     else{
+                        if(fa->transTable[i][j][0] == 0){
+                            printf("-");
+                        }
                         for(int k = 1; k <= fa->transTable[i][j][0]; k++){
                             printf("%d ", fa->transTable[i][j][k]);
                         }
                     }
                 }
                 printf("\t");
-                if(j == fa->nbAlpha){
+                if(j == fa->nbAlpha+1){
                     printf("\n");
                 }
             }
