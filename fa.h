@@ -5,11 +5,13 @@
 #include <stdlib.h>
 
 typedef struct fa {
-    char*** transTable;
-    int nbLin;
-    int nbCol;
-    char* init;
-    char* term;
+    int*** transTable;
+    int nbStates;
+    int nbAlpha;
+    int nbInit;
+    int nbTerm;
+    int* init;
+    int* term;
 } FA;
 
 #endif

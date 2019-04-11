@@ -3,8 +3,8 @@
 
 #include "fa.h"
 
-int searchCol(FA* fa, char c);
-int searchLin(FA* fa, char c);
+int searchCol(FA* fa, int n);
+int searchLin(FA* fa, int n);
 FA* readAutomaton(char* filename);
 void displayAutomaton(FA* fa);
 
