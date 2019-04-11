@@ -2,9 +2,9 @@
 
 int main(){
 
-    FA* fa = readAutomaton("FA example.txt");
-    displayAutomaton(fa);
-    system("pause");
+	FA* fa = readAutomaton("FA example.txt");
+	displayAutomaton(fa);
+	isComplete(fa);
 
-    return 0;
+	return 0;
 }
