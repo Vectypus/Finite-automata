@@ -22,7 +22,7 @@ FA* readAutomaton(char* filename){
 	FILE* file = NULL;
 	file = fopen(filename, "r");
 	int nbTrans;
-	int s1, s2, t, test;
+	int s1, s2, t;
 	char c;
 
 	if(file != NULL){
@@ -35,12 +35,9 @@ FA* readAutomaton(char* filename){
 		fa->init = malloc(fa->nbInit*sizeof(int));
 		for(int i = 0; i < fa->nbInit; i++){
 			// Verify the initial state(s) from the text file
-			fscanf(file, "%d", &test);
-			if (test < fa->nbStates || test < 0) {
-				fa->init[i] = test;
-			}
-			else {
-				printf("/!\\ Unknown initial state !\n");
+			fscanf(file, "%d", &fa->init[i]);
+			if (fa->init[i] > fa->nbStates || fa->init[i] < 0) {
+				printf("/!\\ Unknown initial state '%d'!\n", fa->init[i]);
 				exit(1);
 			}
 		}
@@ -48,12 +45,9 @@ FA* readAutomaton(char* filename){
 		fa->term = malloc(fa->nbTerm*sizeof(int));
 		for(int i = 0; i < fa->nbTerm; i++){
 			// Verify the final state(s) from the text file
-			fscanf(file, "%d", &test);
-			if (test < fa->nbStates || test < 0) {
-				fa->term[i] = test;
-			}
-			else {
-				printf("/!\\ Unknown terminal state !\n");
+			fscanf(file, "%d", &fa->term[i]);
+			if (fa->term[i] > fa->nbStates || fa->term[i] < 0) {
+				printf("/!\\ Unknown terminal state '%d'!\n", fa->term[i]);
 				exit(1);
 			}
 		}
@@ -84,22 +78,21 @@ FA* readAutomaton(char* filename){
 		fscanf(file, "%d", &nbTrans);
 		for(int i = 0; i < nbTrans; i++){
 			// Verify the source state(s) from the text file
-			fscanf(file, "%d", &test);
-			if (test < fa->nbStates || test < 0) {
-				s1 = test;
-			}
-			else {
-				printf("/!\\ Unknown source state !\n");
+			fscanf(file, "%d", &s1);
+			if (s1 > fa->nbStates || s1 < 0) {
+				printf("/!\\ Unknown source state '%d'!\n", s1);
 				exit(1);
 			}
+			// Verify the transition from the text file
 			fscanf(file, "%c", &c);
-			// Verify the target state(s) from the text file
-			fscanf(file, "%d", &test);
-			if (test < fa->nbStates || test < 0) {
-				s2 = test;
+			if (c > 96+fa->nbAlpha || c < 97) {
+				printf("/!\\ Transition '%c' is not in the alphabet!\n", c);
+				exit(1);
 			}
-			else {
-				printf("/!\\ Unknown target state !\n");
+			// Verify the target state(s) from the text file
+			fscanf(file, "%d", &s2);
+			if (s2 > fa->nbStates || s2 < 0) {
+				printf("/!\\ Unknown target state '%d'!\n", s2);
 				exit(1);
 			}
 			t = c;

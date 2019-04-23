@@ -51,22 +51,24 @@ int isDeterministic(FA* fa){
 }
 
 int isComplete(FA* fa) {
-    int compl = 1;
-    for (int i = 1; i <= fa->nbStates; i++) {
-        for (int j = 1; j <= fa->nbAlpha; j++) {
-            if (fa->transTable[i][j][0] == 0) {
-                if (compl) {
-                    compl = 0;
-                    printf("\nNot complete: ");
+    if (isDeterministic(fa)) {
+        int compl = 1;
+        for (int i = 1; i <= fa->nbStates; i++) {
+            for (int j = 1; j <= fa->nbAlpha; j++) {
+                if (fa->transTable[i][j][0] == 0) {
+                    if (compl) {
+                        compl = 0;
+                        printf("\nNot complete: ");
+                    }
+                    printf("%d%c- ", fa->transTable[i][0][0], fa->transTable[0][j][0]);
                 }
-                printf("%d%c- ", fa->transTable[i][0][0], fa->transTable[0][j][0]);
             }
         }
-    }
-    printf("\n");
-    if (compl) {
-        printf("Complete\n");
-        return 1;
+        printf("\n");
+        if (compl) {
+            printf("Complete\n");
+            return 1;
+        }
     }
     return 0;
 }
