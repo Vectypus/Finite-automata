@@ -6,6 +6,6 @@
 int searchCol(FA* fa, int n);
 int searchLin(FA* fa, int n);
 FA* readAutomaton(char* filename);
-void displayAutomaton(FA* fa);
+void displayAutomaton(FA* fa, int det);
 
 #endif
