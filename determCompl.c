@@ -1,5 +1,4 @@
 #include "determCompl.h"
-#include "readDisplay.h"
 #include <math.h>
 
 int isAsynchronous(FA* fa){
@@ -12,7 +11,7 @@ int isAsynchronous(FA* fa){
                 printf("\nAsynchronous: ");
             }
             for(int j = 1; j <= fa->transTable[i][epsCol][0]; j++){
-                printf("%d*%d ", fa->transTable[i][0][0], fa->transTable[i][epsCol][j]);
+                printf("%d*%d ", fa->transTable[i][0][1], fa->transTable[i][epsCol][j]);
             }
         }
     }
@@ -35,7 +34,7 @@ int isDeterministic(FA* fa){
                         printf("\nNot deterministic: ");
                     }
                     for(int k = 1; k <= fa->transTable[i][j][0]; k++){
-                        printf("%d%c%d ", fa->transTable[i][0][0], fa->transTable[0][j][0], fa->transTable[i][j][k]);
+                        printf("%d%c%d ", fa->transTable[i][0][1], fa->transTable[0][j][0], fa->transTable[i][j][k]);
                     }
                 }
             }
@@ -60,7 +59,7 @@ int isComplete(FA* fa) {
                     compl = 0;
                     printf("\nNot complete: ");
                 }
-                printf("%d%c- ", fa->transTable[i][0][0], fa->transTable[0][j][0]);
+                printf("%d%c- ", fa->transTable[i][0][1], fa->transTable[0][j][0]);
             }
         }
     }
@@ -131,10 +130,9 @@ FA* determCompl(FA* fa){
     detFa->term = malloc(detFa->nbStates*sizeof(int));
     int final, k;
     for(int j = 1; j <= detFa->nbStates; j++){
-        final = 0;
-        k = 0;
+        final = k = 0;
         while(k < fa->nbTerm && !final){
-            if(inArray(fa->term[k], detFa->transTable[j][0])){
+            if(inArray(fa->transTable[fa->term[k]+1][0][1], detFa->transTable[j][0])){
                 final = 1;
                 detFa->term[detFa->nbTerm] = j-1;
                 detFa->nbTerm++;
@@ -149,7 +147,7 @@ FA* determCompl(FA* fa){
     return detFa;
 }
 
-void complete(FA* fa){
+FA* complete(FA* fa){
     fa->nbStates++;
     fa->transTable[fa->nbStates][0][0]++;
     fa->transTable[fa->nbStates][0][1] = -1;
@@ -161,6 +159,7 @@ void complete(FA* fa){
             }
         }
     }
+    return fa;
 }
 
 int inArray(int x, int* array){
