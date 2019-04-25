@@ -144,19 +144,23 @@ FA* determCompl(FA* fa){
     }
     // Complete
     if(!isComplete(detFa)){
-        detFa->nbStates++;
-        detFa->transTable[detFa->nbStates][0][0]++;
-        detFa->transTable[detFa->nbStates][0][1] = -1;
-        for (int i = 1; i <= detFa->nbStates; i++) {
-            for (int j = 1; j <= detFa->nbAlpha; j++) {
-                if (detFa->transTable[i][j][0] == 0) {
-                    detFa->transTable[i][j][0]++;
-                    detFa->transTable[i][j][1] = -1;
-                }
+        complete(detFa);
+    }
+    return detFa;
+}
+
+void complete(FA* fa){
+    fa->nbStates++;
+    fa->transTable[fa->nbStates][0][0]++;
+    fa->transTable[fa->nbStates][0][1] = -1;
+    for (int i = 1; i <= fa->nbStates; i++) {
+        for (int j = 1; j <= fa->nbAlpha; j++) {
+            if (fa->transTable[i][j][0] == 0) {
+                fa->transTable[i][j][0]++;
+                fa->transTable[i][j][1] = -1;
             }
         }
     }
-    return detFa;
 }
 
 int inArray(int x, int* array){

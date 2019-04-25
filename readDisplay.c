@@ -55,7 +55,7 @@ FA* readAutomaton(char* filename){
 		// Initialize the table
 		fa->transTable = malloc((fa->nbStates+2)*sizeof(int**)); // Space for a possible 'P' state
 		for(int i = 0; i <= fa->nbStates; i++){
-			fa->transTable[i] = malloc((fa->nbAlpha+2)*sizeof(int*));
+			fa->transTable[i] = malloc((fa->nbAlpha+2)*sizeof(int*)); // Space for '*' trans
 			for(int j = 0; j <= fa->nbAlpha+1; j++){
 				fa->transTable[i][j] = malloc((fa->nbStates+1)*sizeof(int));
 				fa->transTable[i][j][0] = 0;
