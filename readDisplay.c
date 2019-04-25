@@ -86,7 +86,7 @@ FA* readAutomaton(char* filename){
 			}
 			// Verify the transition from the text file
 			fscanf(file, "%c", &c);
-			if (c > 96+fa->nbAlpha || c < 97) {
+			if (c > 96+fa->nbAlpha || (c < 97 && c != 42)) {
 				printf("/!\\ Transition '%c' is not in the alphabet!\n", c);
 				exit(1);
 			}
@@ -116,7 +116,10 @@ void displayAutomaton(FA* fa, int det){
 		printf("Initial states: ");
 		for(int i = 0; i < fa->nbInit; i++){
 			for(int j = 1; j <= fa->transTable[fa->init[i]+1][0][0]; j++){
-				printf("%d", fa->transTable[fa->init[i]+1][0][j]);
+				if(j == fa->transTable[fa->init[i]+1][0][0])
+					printf("%d", fa->transTable[fa->init[i]+1][0][j]);
+				else
+					printf("%d.", fa->transTable[fa->init[i]+1][0][j]);
 			}
 			printf(" ");
 		}
@@ -124,7 +127,10 @@ void displayAutomaton(FA* fa, int det){
 		printf("\nTerminal states: ");
 		for(int i = 0; i < fa->nbTerm; i++){
 			for(int j = 1; j <= fa->transTable[fa->term[i]+1][0][0]; j++){
-				printf("%d", fa->transTable[fa->term[i]+1][0][j]);
+				if(j == fa->transTable[fa->term[i]+1][0][0])
+					printf("%d", fa->transTable[fa->term[i]+1][0][j]);
+				else
+					printf("%d.", fa->transTable[fa->term[i]+1][0][j]);
 			}
 			printf(" ");
 		}
@@ -145,7 +151,10 @@ void displayAutomaton(FA* fa, int det){
 								printf("P");
 							}
 							else if(det){
-								printf("%d", fa->transTable[i][j][k]);
+								if(k == fa->transTable[i][j][0])
+									printf("%d", fa->transTable[i][j][k]);
+								else
+									printf("%d.", fa->transTable[i][j][k]);
 							}
 							else{
 								printf("%d ", fa->transTable[i][j][k]);
