@@ -141,7 +141,10 @@ void displayAutomaton(FA* fa, int det){
 							printf("-");
 						}
 						for(int k = 1; k <= fa->transTable[i][j][0]; k++){
-							if(det){
+							if(fa->transTable[i][j][k] == -1){
+								printf("P");
+							}
+							else if(det){
 								printf("%d", fa->transTable[i][j][k]);
 							}
 							else{

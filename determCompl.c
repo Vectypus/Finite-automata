@@ -142,6 +142,20 @@ FA* determCompl(FA* fa){
             k++;
         }
     }
+    // Complete
+    if(!isComplete(detFa)){
+        detFa->nbStates++;
+        detFa->transTable[detFa->nbStates][0][0]++;
+        detFa->transTable[detFa->nbStates][0][1] = -1;
+        for (int i = 1; i <= detFa->nbStates; i++) {
+            for (int j = 1; j <= detFa->nbAlpha; j++) {
+                if (detFa->transTable[i][j][0] == 0) {
+                    detFa->transTable[i][j][0]++;
+                    detFa->transTable[i][j][1] = -1;
+                }
+            }
+        }
+    }
     return detFa;
 }
 
