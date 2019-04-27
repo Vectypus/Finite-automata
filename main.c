@@ -20,5 +20,14 @@ int main(){
     }
     displayAutomaton(cdfa, 1);
 
+    char word[1000];
+    printf("Word to test: ");
+    scanf("%s", word);
+    while(word[0] < '0' || word[0] > '9'){
+        recognizeWord(word, cdfa);
+        printf("Word to test: ");
+        scanf("%s", word);
+    }
+
 	return 0;
 }

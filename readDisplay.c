@@ -170,3 +170,42 @@ void displayAutomaton(FA* fa, int det){
 		}
 	}
 }
+
+int searchState(int* state, FA* fa){
+    int i = 1, j;
+    while(i <= fa->nbStates){
+        if(fa->transTable[i][0][0] == state[0]){
+            j = 1;
+            while(j <= state[0] && fa->transTable[i][0][j] == state[j]){
+                j++;
+            }
+            if(j > state[0]){
+                return i;
+            }
+        }
+        i++;
+    }
+    return 0;
+}
+
+void recognizeWord(char* word, FA* fa){
+	int curr = fa->init[0]+1, i = 0, t = 0;
+	if(word[i] != '*'){
+		while(word[i] != '\0'){
+			t = word[i];
+			curr = searchState(fa->transTable[curr][searchCol(fa, t)], fa);
+			i++;
+		}
+	}
+	i = t = 0;
+	while(i < fa->nbTerm && !t){
+		if(curr-1 == fa->term[i]){
+			t = 1;
+		}
+		i++;
+	}
+	if(t)
+		printf("Yes\n");
+	else
+		printf("No\n");
+}
