@@ -8,10 +8,8 @@ typedef struct fa {
     int*** transTable;
     int nbStates;
     int nbAlpha;
-    int nbInit;
-    int nbTerm;
-    int* init;
-    int* term;
+    int* init; // init[0] contains nbInit
+    int* term; // term[0] contains nbTerm
 } FA;
 
 #endif

@@ -28,7 +28,7 @@ int main(){
     printf("Word to test: ");
     scanf("%s", word);
     while(word[0] < '0' || word[0] > '9'){
-        recognizeWord(word, cdfa);
+        recognizeWord(word, mcdfa);
         printf("Word to test: ");
         scanf("%s", word);
     }

@@ -31,22 +31,24 @@ FA* readAutomaton(char* filename){
 		fscanf(file, "%d", &fa->nbStates);
 
 		// Fill initial and terminal states
-		fscanf(file, "%d", &fa->nbInit);
-		fa->init = malloc(fa->nbInit*sizeof(int));
-		for(int i = 0; i < fa->nbInit; i++){
+		fa->init = malloc(fa->nbStates*sizeof(int));
+		fscanf(file, "%d", &fa->init[0]);
+		for(int i = 1; i <= fa->init[0]; i++){
 			// Verify the initial state(s) from the text file
 			fscanf(file, "%d", &fa->init[i]);
-			if (fa->init[i] > fa->nbStates || fa->init[i] < 0) {
+			fa->init[i]++; // line number in transTable
+			if (fa->init[i] > fa->nbStates || fa->init[i] <= 0) {
 				printf("/!\\ Unknown initial state '%d'!\n", fa->init[i]);
 				exit(1);
 			}
 		}
-		fscanf(file, "%d", &fa->nbTerm);
-		fa->term = malloc(fa->nbTerm*sizeof(int));
-		for(int i = 0; i < fa->nbTerm; i++){
+		fa->term = malloc(fa->nbStates*sizeof(int));
+		fscanf(file, "%d", &fa->term[0]);
+		for(int i = 1; i <= fa->term[0]; i++){
 			// Verify the final state(s) from the text file
 			fscanf(file, "%d", &fa->term[i]);
-			if (fa->term[i] > fa->nbStates || fa->term[i] < 0) {
+			fa->term[i]++;
+			if (fa->term[i] > fa->nbStates || fa->term[i] <= 0) {
 				printf("/!\\ Unknown terminal state '%d'!\n", fa->term[i]);
 				exit(1);
 			}
@@ -54,7 +56,7 @@ FA* readAutomaton(char* filename){
 
 		// Initialize the table
 		fa->transTable = malloc((fa->nbStates+2)*sizeof(int**)); // Space for a possible 'P' state
-		for(int i = 0; i <= fa->nbStates; i++){
+		for(int i = 0; i <= fa->nbStates+1; i++){
 			fa->transTable[i] = malloc((fa->nbAlpha+2)*sizeof(int*)); // Space for '*' trans
 			for(int j = 0; j <= fa->nbAlpha+1; j++){
 				fa->transTable[i][j] = malloc((fa->nbStates+1)*sizeof(int));
@@ -63,8 +65,8 @@ FA* readAutomaton(char* filename){
 		}
 
 		// Fill alphabet
-		for(int i = 1; i <= fa->nbAlpha; i++){
-			fa->transTable[0][i][0] = 96+i;
+		for(int j = 1; j <= fa->nbAlpha; j++){
+			fa->transTable[0][j][0] = 96+j;
 		}
 		fa->transTable[0][fa->nbAlpha+1][0] = 42; // '*' char
 
@@ -114,23 +116,23 @@ FA* readAutomaton(char* filename){
 void displayAutomaton(FA* fa, int det){
 	if(fa){
 		printf("Initial states: ");
-		for(int i = 0; i < fa->nbInit; i++){
-			for(int j = 1; j <= fa->transTable[fa->init[i]+1][0][0]; j++){
-				if(j == fa->transTable[fa->init[i]+1][0][0])
-					printf("%d", fa->transTable[fa->init[i]+1][0][j]);
+		for(int i = 1; i <= fa->init[0]; i++){
+			for(int j = 1; j <= fa->transTable[fa->init[i]][0][0]; j++){
+				if(j == fa->transTable[fa->init[i]][0][0])
+					printf("%d", fa->transTable[fa->init[i]][0][j]);
 				else
-					printf("%d.", fa->transTable[fa->init[i]+1][0][j]);
+					printf("%d.", fa->transTable[fa->init[i]][0][j]);
 			}
 			printf(" ");
 		}
 
 		printf("\nTerminal states: ");
-		for(int i = 0; i < fa->nbTerm; i++){
-			for(int j = 1; j <= fa->transTable[fa->term[i]+1][0][0]; j++){
-				if(j == fa->transTable[fa->term[i]+1][0][0])
-					printf("%d", fa->transTable[fa->term[i]+1][0][j]);
+		for(int i = 1; i <= fa->term[0]; i++){
+			for(int j = 1; j <= fa->transTable[fa->term[i]][0][0]; j++){
+				if(j == fa->transTable[fa->term[i]][0][0])
+					printf("%d", fa->transTable[fa->term[i]][0][j]);
 				else
-					printf("%d.", fa->transTable[fa->term[i]+1][0][j]);
+					printf("%d.", fa->transTable[fa->term[i]][0][j]);
 			}
 			printf(" ");
 		}
@@ -138,27 +140,25 @@ void displayAutomaton(FA* fa, int det){
 		printf("\n\nTransition table:\n");
 		for(int i = 0; i <= fa->nbStates; i++){
 			for(int j = 0; j <= fa->nbAlpha+1; j++){
-				if(i != 0 || j != 0){
-					if(i == 0){
-						printf("%c ", fa->transTable[i][j][0]);
+				if(i == 0){
+					printf("%c ", fa->transTable[0][j][0]);
+				}
+				else{
+					if(fa->transTable[i][j][0] == 0){
+						printf("-");
 					}
-					else{
-						if(fa->transTable[i][j][0] == 0){
-							printf("-");
+					for(int k = 1; k <= fa->transTable[i][j][0]; k++){
+						if(fa->transTable[i][j][k] == -1){
+							printf("P");
 						}
-						for(int k = 1; k <= fa->transTable[i][j][0]; k++){
-							if(fa->transTable[i][j][k] == -1){
-								printf("P");
-							}
-							else if(det){
-								if(k == fa->transTable[i][j][0])
-									printf("%d", fa->transTable[i][j][k]);
-								else
-									printf("%d.", fa->transTable[i][j][k]);
-							}
-							else{
-								printf("%d ", fa->transTable[i][j][k]);
-							}
+						else if(det){
+							if(k == fa->transTable[i][j][0])
+								printf("%d", fa->transTable[i][j][k]);
+							else
+								printf("%d.", fa->transTable[i][j][k]);
+						}
+						else{
+							printf("%d ", fa->transTable[i][j][k]);
 						}
 					}
 				}
@@ -172,8 +172,8 @@ void displayAutomaton(FA* fa, int det){
 }
 
 int searchState(int* state, FA* fa){
-    int i = 1, j;
-    while(i <= fa->nbStates){
+    int j;
+    for(int i = 1; i <= fa->nbStates; i++){
         if(fa->transTable[i][0][0] == state[0]){
             j = 1;
             while(j <= state[0] && fa->transTable[i][0][j] == state[j]){
@@ -183,13 +183,21 @@ int searchState(int* state, FA* fa){
                 return i; // line number
             }
         }
-        i++;
+    }
+    return 0;
+}
+
+int inArray(int x, int* array){
+    for(int i = 1; i <= array[0]; i++){
+        if(array[i] == x){
+            return 1;
+        }
     }
     return 0;
 }
 
 void recognizeWord(char* word, FA* fa){
-	int curr = fa->init[0]+1, i = 0, t = 0;
+	int curr = fa->init[1], i = 0, t = 0;
 	if(word[i] != '*'){
 		while(word[i] != '\0'){
 			t = word[i];
@@ -197,14 +205,8 @@ void recognizeWord(char* word, FA* fa){
 			i++;
 		}
 	}
-	i = t = 0;
-	while(i < fa->nbTerm && !t){
-		if(curr-1 == fa->term[i]){
-			t = 1;
-		}
-		i++;
-	}
-	if(t)
+
+	if(inArray(curr, fa->term))
 		printf("Yes\n");
 	else
 		printf("No\n");

@@ -15,16 +15,8 @@ FA* minimize(FA* fa){
         groups1[i][0] = 0;
     }
     // Groups at t0
-    int j, t;
     for(int i = 1; i <= fa->nbStates; i++){
-        j = t = 0;
-        while(j < fa->nbTerm && !t){
-            if(i-1 == fa->term[j]){
-                t = 1;
-            }
-            j++;
-        }
-        if(t){
+        if(inArray(i, fa->term)){
             groups1[0][0]++;
             groups1[0][groups1[0][0]] = i-1;
         }
@@ -106,29 +98,21 @@ FA* minimize(FA* fa){
         minFa->transTable[0][minFa->nbAlpha+1][0] = 42;
 
         // Find initial and final states
-        minFa->nbInit = 1;
-        minFa->init = malloc(sizeof(int));
+        minFa->init = malloc(2*sizeof(int));
+        minFa->init[0] = 1;
         for(int i = 1; i <= minFa->nbStates; i++){
             for(int j = 1; j <= minFa->transTable[i][0][0]; j++){
-                if(fa->init[0] == minFa->transTable[i][0][j])
-                    minFa->init[0] = i-1;
+                if(fa->init[1]-1 == minFa->transTable[i][0][j])
+                    minFa->init[1] = i;
             }
         }
 
-        int k, t;
-        minFa->nbTerm = 0;
-        minFa->term = malloc(fa->nbTerm*sizeof(int));
+        minFa->term = malloc(fa->term[0]*sizeof(int));
+        minFa->term[0] = 0;
         for(int i = 1; i <= minFa->nbStates; i++){
-            k = t = 0;
-            while(k < fa->nbTerm && !t){
-                if(minFa->transTable[i][0][1] == fa->term[k]){
-                    t = 1;
-                }
-                k++;
-            }
-            if(t){
-                minFa->term[minFa->nbTerm] = i-1;
-                minFa->nbTerm++;
+            if(inArray(minFa->transTable[i][0][1]+1, fa->term)){
+                minFa->term[0]++;
+                minFa->term[minFa->term[0]] = i;
             }
         }
 

@@ -2,16 +2,15 @@
 #include <math.h>
 
 int isAsynchronous(FA* fa){
-    int epsCol = searchCol(fa, 42);
     int asynch = 0;
     for(int i = 1; i <= fa->nbStates; i++){
-        if(fa->transTable[i][epsCol][0] != 0){
+        if(fa->transTable[i][fa->nbAlpha+1][0] != 0){
             if(!asynch){
                 asynch = 1;
                 printf("\nAsynchronous: ");
             }
-            for(int j = 1; j <= fa->transTable[i][epsCol][0]; j++){
-                printf("%d*%d ", fa->transTable[i][0][1], fa->transTable[i][epsCol][j]);
+            for(int j = 1; j <= fa->transTable[i][fa->nbAlpha+1][0]; j++){
+                printf("%d*%d ", fa->transTable[i][0][1], fa->transTable[i][fa->nbAlpha+1][j]);
             }
         }
     }
@@ -24,10 +23,10 @@ int isAsynchronous(FA* fa){
 }
 
 int isDeterministic(FA* fa){
-    if(fa->nbInit == 1){
+    if(fa->init[0] == 1){
         int det = 1;
         for(int i = 1; i <= fa->nbStates; i++){
-            for(int j = 1; j <= fa->nbAlpha+1; j++){
+            for(int j = 1; j <= fa->nbAlpha; j++){
                 if(!existingState(fa->transTable[i][j], fa)){
                     if(det){
                         det = 0;
@@ -54,7 +53,7 @@ int isComplete(FA* fa) {
     int compl = 1;
     for (int i = 1; i <= fa->nbStates; i++) {
         for (int j = 1; j <= fa->nbAlpha; j++) {
-            if (fa->transTable[i][j][0] == 0) {
+            if (!fa->transTable[i][j][0]) {
                 if (compl) {
                     compl = 0;
                     printf("\nNot complete: ");
@@ -87,23 +86,23 @@ FA* determCompl(FA* fa){
     }
 
     // Fill alphabet
-    for(int i = 1; i <= detFa->nbAlpha; i++){
-        detFa->transTable[0][i][0] = 96+i;
+    for(int j = 1; j <= detFa->nbAlpha; j++){
+        detFa->transTable[0][j][0] = 96+j;
     }
     detFa->transTable[0][detFa->nbAlpha+1][0] = 42;
 
-    // Construction of the table
-    detFa->nbInit = 1;
-    detFa->init = malloc(sizeof(int));
-    detFa->init[0] = 0;
     // New initial state
-    for(int i = 0; i < fa->nbInit; i++){
+    detFa->init = malloc(2*sizeof(int));
+    detFa->init[0] = 1;
+    detFa->init[1] = 1;
+
+    for(int i = 1; i <= fa->init[0]; i++){
         detFa->transTable[1][0][0]++;
-        detFa->transTable[1][0][i+1] = fa->init[i];
+        detFa->transTable[1][0][i] = fa->init[i]-1;
     }
     // Compute new states
     int i = 1;
-    while(detFa->transTable[i][0][0] != 0){
+    while(detFa->transTable[i][0][0]){
         for(int j = 1; j <= detFa->transTable[i][0][0]; j++){
             int state = searchLin(fa, detFa->transTable[i][0][j]);
             for(int k = 1; k <= fa->nbAlpha; k++){
@@ -126,18 +125,19 @@ FA* determCompl(FA* fa){
         i++;
     }
     // Find final states
-    detFa->nbTerm = 0;
     detFa->term = malloc(detFa->nbStates*sizeof(int));
-    int final, k;
-    for(int j = 1; j <= detFa->nbStates; j++){
-        final = k = 0;
-        while(k < fa->nbTerm && !final){
-            if(inArray(fa->transTable[fa->term[k]+1][0][1], detFa->transTable[j][0])){
+    detFa->term[0] = 0;
+    int final, j;
+    for(int i = 1; i <= detFa->nbStates; i++){
+        final = 0;
+        j = 1;
+        while(j <= fa->term[0] && !final){
+            if(inArray(fa->transTable[fa->term[j]][0][1], detFa->transTable[i][0])){
                 final = 1;
-                detFa->term[detFa->nbTerm] = j-1;
-                detFa->nbTerm++;
+                detFa->term[0]++;
+                detFa->term[detFa->term[0]] = i;
             }
-            k++;
+            j++;
         }
     }
     // Complete
@@ -153,24 +153,13 @@ FA* complete(FA* fa){
     fa->transTable[fa->nbStates][0][1] = -1;
     for (int i = 1; i <= fa->nbStates; i++) {
         for (int j = 1; j <= fa->nbAlpha; j++) {
-            if (fa->transTable[i][j][0] == 0) {
+            if (!fa->transTable[i][j][0]) {
                 fa->transTable[i][j][0]++;
                 fa->transTable[i][j][1] = -1;
             }
         }
     }
     return fa;
-}
-
-int inArray(int x, int* array){
-    int i = 1;
-    while(i <= array[0]){
-        if(array[i] == x){
-            return 1;
-        }
-        i++;
-    }
-    return 0;
 }
 
 void sortArray(int* array){
@@ -190,12 +179,12 @@ void sortArray(int* array){
 
 int existingState(int* state, FA* fa){
     // Ignore empty state
-    if(state[0] == 0){
+    if(!state[0]){
         return 1;
     }
 
-    int i = 1, j;
-    while(i <= fa->nbStates){
+    int j;
+    for(int i = 1; i <= fa->nbStates; i++){
         if(fa->transTable[i][0][0] == state[0]){
             j = 1;
             while(j <= state[0] && fa->transTable[i][0][j] == state[j]){
@@ -205,7 +194,6 @@ int existingState(int* state, FA* fa){
                 return 1;
             }
         }
-        i++;
     }
     return 0;
 }

@@ -7,9 +7,9 @@ FA* determComplAsynch(FA* fa){
         synchStates[i] = malloc((fa->nbStates+1)*sizeof(int));
         synchStates[i][0] = 0;
     }
-    for(int i = 0; i < fa->nbInit; i++){
+    for(int i = 1; i <= fa->init[0]; i++){
         synchStates[0][0]++;
-        synchStates[0][i+1] = fa->init[i];
+        synchStates[0][i] = fa->init[i]-1;
     }
     int nb = 1;
     for(int i = 1; i <= fa->nbStates; i++){
@@ -34,21 +34,21 @@ FA* determComplAsynch(FA* fa){
     for(int i = 0; i <= synchFa->nbStates; i++){
         synchFa->transTable[i] = malloc((synchFa->nbAlpha+2)*sizeof(int*));
         for(int j = 0; j <= synchFa->nbAlpha+1; j++){
-            synchFa->transTable[i][j] = malloc((fa->nbStates+1)*sizeof(int));
+            synchFa->transTable[i][j] = malloc((synchFa->nbStates+1)*sizeof(int));
             synchFa->transTable[i][j][0] = 0;
         }
     }
 
     // Fill alphabet
-    for(int i = 1; i <= synchFa->nbAlpha; i++){
-        synchFa->transTable[0][i][0] = 96+i;
+    for(int j = 1; j <= synchFa->nbAlpha; j++){
+        synchFa->transTable[0][j][0] = 96+j;
     }
     synchFa->transTable[0][synchFa->nbAlpha+1][0] = 42;
 
     // Construction of the table
-    synchFa->nbInit = 1;
-    synchFa->init = malloc(sizeof(int));
-    synchFa->init[0] = 0;
+    synchFa->init = malloc(2*sizeof(int));
+    synchFa->init[0] = 1;
+    synchFa->init[1] = 1;
 
     // Import states and transitions
     for(int i = 1; i <= synchFa->nbStates; i++){
@@ -67,16 +67,17 @@ FA* determComplAsynch(FA* fa){
     }
 
     // Find final states
-    synchFa->nbTerm = 0;
     synchFa->term = malloc(synchFa->nbStates*sizeof(int));
+    synchFa->term[0] = 0;
     int final, j;
     for(int i = 1; i <= synchFa->nbStates; i++){
-        final = j = 0;
-        while(j < fa->nbTerm && !final){
-            if(inArray(fa->term[j], synchStates[i-1])){
+        final = 0;
+        j = 1;
+        while(j <= fa->term[0] && !final){
+            if(inArray(fa->term[j]-1, synchStates[i-1])){
                 final = 1;
-                synchFa->term[synchFa->nbTerm] = i-1;
-                synchFa->nbTerm++;
+                synchFa->term[0]++;
+                synchFa->term[synchFa->term[0]] = i;
             }
             j++;
         }
@@ -89,16 +90,11 @@ FA* determComplAsynch(FA* fa){
 }
 
 int target(int x, FA* fa){
-    int i = 1, j;
-    while(i <= fa->nbStates){
-        j = 1;
-        while(j <= fa->nbAlpha){
-            if(inArray(x, fa->transTable[i][j])){
+    for(int i = 1; i <= fa->nbStates; i++){
+        for(int j = 1; j <= fa->nbAlpha; j++){
+            if(inArray(x, fa->transTable[i][j]))
                 return 1;
-            }
-            j++;
         }
-        i++;
     }
     return 0;
 }
