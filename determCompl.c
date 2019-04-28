@@ -81,7 +81,7 @@ FA* determCompl(FA* fa){
     for(int i = 0; i <= pow(2, fa->nbStates)+1; i++){
         detFa->transTable[i] = malloc((detFa->nbAlpha+2)*sizeof(int*));
         for(int j = 0; j <= detFa->nbAlpha+1; j++){
-            detFa->transTable[i][j] = malloc((fa->nbStates+1)*sizeof(int));
+            detFa->transTable[i][j] = malloc((pow(2,fa->nbStates)+1)*sizeof(int));
             detFa->transTable[i][j][0] = 0;
         }
     }

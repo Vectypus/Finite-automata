@@ -180,7 +180,7 @@ int searchState(int* state, FA* fa){
                 j++;
             }
             if(j > state[0]){
-                return i;
+                return i; // line number
             }
         }
         i++;

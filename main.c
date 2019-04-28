@@ -1,4 +1,5 @@
 #include "determComplAsynch.h"
+#include "minimization.h"
 
 int main(){
 
@@ -19,6 +20,9 @@ int main(){
             cdfa = determCompl(fa);
     }
     displayAutomaton(cdfa, 1);
+
+    FA* mcdfa = minimize(cdfa);
+    displayAutomaton(mcdfa, 1);
 
     char word[1000];
     printf("Word to test: ");
