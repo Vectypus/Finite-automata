@@ -1,5 +1,6 @@
 #include "determComplAsynch.h"
 #include "minimization.h"
+#include "complemStand.h"
 
 int main(){
 
@@ -32,6 +33,9 @@ int main(){
         printf("Word to test: ");
         scanf("%s", word);
     }
+
+    FA* complfa = complementary(mcdfa);
+    displayAutomaton(complfa, 1);
 
 	return 0;
 }
