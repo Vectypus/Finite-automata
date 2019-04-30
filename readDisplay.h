@@ -9,6 +9,6 @@ FA* readAutomaton(char* filename);
 void displayAutomaton(FA* fa, int det);
 int searchState(int* state, FA* fa);
 int inArray(int x, int* array);
-void recognizeWord(char* word, FA* fa);
+int recognizeWord(char* word, FA* fa);
 
 #endif

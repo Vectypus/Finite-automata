@@ -4,5 +4,7 @@
 #include "readDisplay.h"
 
 FA* complementary(FA* fa);
+int isStandard(FA* fa);
+FA* standardize(FA* fa);
 
 #endif

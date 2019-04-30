@@ -151,6 +151,9 @@ void displayAutomaton(FA* fa, int det){ // use isDeterministic ?
 						if(fa->transTable[i][j][k] == -1){
 							printf("P");
 						}
+						else if(fa->transTable[i][j][k] == -2){
+							printf("i");
+						}
 						else if(det){
 							if(k == fa->transTable[i][j][0])
 								printf("%d", fa->transTable[i][j][k]);
@@ -196,7 +199,7 @@ int inArray(int x, int* array){
     return 0;
 }
 
-void recognizeWord(char* word, FA* fa){
+int recognizeWord(char* word, FA* fa){
 	int curr = fa->init[1], i = 0, t = 0;
 	if(word[i] != '*'){
 		while(word[i] != '\0'){
@@ -206,8 +209,10 @@ void recognizeWord(char* word, FA* fa){
 		}
 	}
 
-	if(inArray(curr, fa->term))
+	if(inArray(curr, fa->term)){
 		printf("Yes\n");
-	else
-		printf("No\n");
+		return 1;
+	}
+	printf("No\n");
+	return 0;
 }
