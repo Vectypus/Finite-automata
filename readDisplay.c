@@ -118,8 +118,12 @@ void displayAutomaton(FA* fa, int det){ // use isDeterministic ?
 		printf("Initial states: ");
 		for(int i = 1; i <= fa->init[0]; i++){
 			for(int j = 1; j <= fa->transTable[fa->init[i]][0][0]; j++){
-				if(j == fa->transTable[fa->init[i]][0][0])
-					printf("%d", fa->transTable[fa->init[i]][0][j]);
+				if(j == fa->transTable[fa->init[i]][0][0]){
+					if(fa->transTable[fa->init[i]][0][j] == -2)
+						printf("i");
+					else
+						printf("%d", fa->transTable[fa->init[i]][0][j]);
+				}
 				else
 					printf("%d.", fa->transTable[fa->init[i]][0][j]);
 			}
@@ -129,8 +133,12 @@ void displayAutomaton(FA* fa, int det){ // use isDeterministic ?
 		printf("\nTerminal states: ");
 		for(int i = 1; i <= fa->term[0]; i++){
 			for(int j = 1; j <= fa->transTable[fa->term[i]][0][0]; j++){
-				if(j == fa->transTable[fa->term[i]][0][0])
-					printf("%d", fa->transTable[fa->term[i]][0][j]);
+				if(j == fa->transTable[fa->term[i]][0][0]){
+					if(fa->transTable[fa->term[i]][0][j] == -1)
+						printf("P");
+					else
+						printf("%d", fa->transTable[fa->term[i]][0][j]);
+				}
 				else
 					printf("%d.", fa->transTable[fa->term[i]][0][j]);
 			}
