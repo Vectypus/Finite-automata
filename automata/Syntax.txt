@@ -1,0 +1,6 @@
+nbAlpha
+nbStates
+nbInit [list initStates sep =' ']
+nbTerm [list termStates sep =' ']
+nbTrans
+[list tran sep='\n']
