@@ -64,8 +64,8 @@ FA* minimize(FA* fa){
         minFa->nbAlpha = fa->nbAlpha;
 
         // Fill the table
-        minFa->transTable = malloc((minFa->nbStates+1)*sizeof(int**));
-        for(int i = 0; i <= minFa->nbStates; i++){
+        minFa->transTable = malloc((minFa->nbStates+2)*sizeof(int**)); // Space for possible 'i'
+        for(int i = 0; i <= minFa->nbStates+1; i++){
             minFa->transTable[i] = malloc((minFa->nbAlpha+2)*sizeof(int*));
             for(int j = 0; j <= minFa->nbAlpha+1; j++){
                 minFa->transTable[i][j] = malloc((minFa->nbStates+1)*sizeof(int));

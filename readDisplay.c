@@ -55,8 +55,8 @@ FA* readAutomaton(char* filename){
 		}
 
 		// Initialize the table
-		fa->transTable = malloc((fa->nbStates+2)*sizeof(int**)); // Space for a possible 'P' state
-		for(int i = 0; i <= fa->nbStates+1; i++){
+		fa->transTable = malloc((fa->nbStates+3)*sizeof(int**)); // Spaces for possible 'P' and 'i' states
+		for(int i = 0; i <= fa->nbStates+2; i++){
 			fa->transTable[i] = malloc((fa->nbAlpha+2)*sizeof(int*)); // Space for '*' trans
 			for(int j = 0; j <= fa->nbAlpha+1; j++){
 				fa->transTable[i][j] = malloc((fa->nbStates+1)*sizeof(int));
@@ -136,6 +136,8 @@ void displayAutomaton(FA* fa, int det){ // use isDeterministic ?
 				if(j == fa->transTable[fa->term[i]][0][0]){
 					if(fa->transTable[fa->term[i]][0][j] == -1)
 						printf("P");
+					else if(fa->transTable[fa->term[i]][0][j] == -2)
+						printf("i");
 					else
 						printf("%d", fa->transTable[fa->term[i]][0][j]);
 				}

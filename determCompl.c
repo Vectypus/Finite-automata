@@ -76,8 +76,9 @@ FA* determCompl(FA* fa){
     detFa->nbStates = 1;
 
     // Initialize the table
-    detFa->transTable = malloc((pow(2,fa->nbStates)+2)*sizeof(int**)); // 2^n: max number of states for the determinized
-    for(int i = 0; i <= pow(2, fa->nbStates)+1; i++){
+    detFa->transTable = malloc((pow(2, fa->nbStates)+3)*sizeof(int**)); // 2^n: max number of states for the determinized
+                                                                       // Spaces for possible 'P' and 'i'
+    for(int i = 0; i <= pow(2, fa->nbStates)+2; i++){
         detFa->transTable[i] = malloc((detFa->nbAlpha+2)*sizeof(int*));
         for(int j = 0; j <= detFa->nbAlpha+1; j++){
             detFa->transTable[i][j] = malloc((pow(2,fa->nbStates)+1)*sizeof(int));
