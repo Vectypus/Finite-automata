@@ -113,7 +113,7 @@ FA* readAutomaton(char* filename){
 	return fa;
 }
 
-void displayAutomaton(FA* fa, int det){ // use isDeterministic ?
+void displayAutomaton(FA* fa, int det){ // use isDeterministic and isAsynchronous ?
 	if(fa){
 		printf("Initial states: ");
 		for(int i = 1; i <= fa->init[0]; i++){

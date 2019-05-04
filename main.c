@@ -11,7 +11,7 @@ int main(){
         sprintf(path, "automata/#%d.txt", numFa);
         FA* fa = readAutomaton(path);
         
-        printf("*** Automaton ***\n");
+        printf("\n*** Automaton ***\n");
         displayAutomaton(fa, 0);
 
         FA* cdfa;
