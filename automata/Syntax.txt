@@ -1,6 +1,6 @@
 nbAlpha
 nbStates
-nbInit [list initStates sep =' ']
-nbTerm [list termStates sep =' ']
+nbInit [list initStates sep=' ']
+nbTerm [list termStates sep=' ']
 nbTrans
 [list trans sep='\n']

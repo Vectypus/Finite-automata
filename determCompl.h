@@ -3,8 +3,8 @@
 
 #include "readDisplay.h"
 
-int isAsynchronous(FA* fa);
-int isDeterministic(FA* fa);
+int isAsynchronous(FA* fa, int disp);
+int isDeterministic(FA* fa, int disp);
 int isComplete(FA* fa);
 FA* determCompl(FA* fa);
 FA* complete(FA* fa);
