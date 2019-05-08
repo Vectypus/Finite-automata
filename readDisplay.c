@@ -113,7 +113,7 @@ FA* readAutomaton(char* filename){
 	return fa;
 }
 
-void displayAutomaton(FA* fa, int det){ // use isDeterministic and isAsynchronous ?
+void displayAutomaton(FA* fa){
 	if(fa){
 		printf("Initial states: ");
 		for(int i = 1; i <= fa->init[0]; i++){
@@ -150,28 +150,30 @@ void displayAutomaton(FA* fa, int det){ // use isDeterministic and isAsynchronou
 		printf("\n\nTransition table:\n");
 		for(int i = 0; i <= fa->nbStates; i++){
 			for(int j = 0; j <= fa->nbAlpha+1; j++){
-				if(i == 0){
-					printf("%c ", fa->transTable[0][j][0]);
-				}
-				else{
-					if(fa->transTable[i][j][0] == 0){
-						printf("-");
+				if(isAsynchronous(fa, 0) || j != fa->nbAlpha+1){
+					if(i == 0){
+						printf("%c ", fa->transTable[0][j][0]);
 					}
-					for(int k = 1; k <= fa->transTable[i][j][0]; k++){
-						if(fa->transTable[i][j][k] == -1){
-							printf("P");
+					else{
+						if(fa->transTable[i][j][0] == 0){
+							printf("-");
 						}
-						else if(fa->transTable[i][j][k] == -2){
-							printf("i");
-						}
-						else if(det){
-							if(k == fa->transTable[i][j][0])
-								printf("%d", fa->transTable[i][j][k]);
-							else
-								printf("%d.", fa->transTable[i][j][k]);
-						}
-						else{
-							printf("%d ", fa->transTable[i][j][k]);
+						for(int k = 1; k <= fa->transTable[i][j][0]; k++){
+							if(fa->transTable[i][j][k] == -1){
+								printf("P");
+							}
+							else if(fa->transTable[i][j][k] == -2){
+								printf("i");
+							}
+							else if(!isAsynchronous(fa, 0) && isDeterministic(fa, 0)){
+								if(k == fa->transTable[i][j][0])
+									printf("%d", fa->transTable[i][j][k]);
+								else
+									printf("%d.", fa->transTable[i][j][k]);
+							}
+							else{
+								printf("%d ", fa->transTable[i][j][k]);
+							}
 						}
 					}
 				}

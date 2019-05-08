@@ -12,13 +12,13 @@ int main(){
         FA* fa = readAutomaton(path);
         
         printf("\n*** Automaton ***\n");
-        displayAutomaton(fa, 0);
+        displayAutomaton(fa);
 
         FA* cdfa;
-        if(isAsynchronous(fa))
+        if(isAsynchronous(fa, 1))
             cdfa = determComplAsynch(fa);
         else{
-            if(isDeterministic(fa)){
+            if(isDeterministic(fa, 1)){
                 if(isComplete(fa))
                     cdfa = fa;
                 else
@@ -28,11 +28,11 @@ int main(){
                 cdfa = determCompl(fa);
         }
         printf("\n*** Complete deterministic automaton ***\n");
-        displayAutomaton(cdfa, 1);
+        displayAutomaton(cdfa);
 
         FA* mcdfa = minimize(cdfa);
         printf("\n*** Complete deterministic minimal automaton ***\n");
-        displayAutomaton(mcdfa, 1);
+        displayAutomaton(mcdfa);
 
         char word[1000];
         printf("\n*** Word recognition ***\n(Enter a digit to exit the loop)\n");
@@ -46,11 +46,11 @@ int main(){
 
         FA* complfa = complementary(mcdfa);
         printf("\n*** Complementary language automaton ***\n");
-        displayAutomaton(complfa, 1);
+        displayAutomaton(complfa);
 
         FA* complstdfa = standardize(complfa);
         printf("\n*** Complementary language standardized automaton ***\n");
-        displayAutomaton(complstdfa, 1);
+        displayAutomaton(complstdfa);
 
         printf("\n*** Word recognition ***\n(Enter a digit to exit the loop)\n");
         printf("Word to test: ");

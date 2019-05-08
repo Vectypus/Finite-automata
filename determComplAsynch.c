@@ -83,7 +83,7 @@ FA* determComplAsynch(FA* fa){
         }
     }
 
-    displayAutomaton(synchFa, 0);
+    displayAutomaton(synchFa);
     FA* detFa = determCompl(synchFa);
 
     return detFa;
