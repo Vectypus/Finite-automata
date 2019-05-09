@@ -31,9 +31,9 @@ FA* determComplAsynch(FA* fa){
 
     // Initialize the table
     synchFa->transTable = malloc((synchFa->nbStates+1)*sizeof(int**));
-    for(int i = 0; i <= synchFa->nbStates; i++){
+    for(int i = 0; i < synchFa->nbStates+1; i++){
         synchFa->transTable[i] = malloc((synchFa->nbAlpha+2)*sizeof(int*));
-        for(int j = 0; j <= synchFa->nbAlpha+1; j++){
+        for(int j = 0; j < synchFa->nbAlpha+2; j++){
             synchFa->transTable[i][j] = malloc((synchFa->nbStates+1)*sizeof(int));
             synchFa->transTable[i][j][0] = 0;
         }
@@ -67,7 +67,7 @@ FA* determComplAsynch(FA* fa){
     }
 
     // Find final states
-    synchFa->term = malloc(synchFa->nbStates*sizeof(int));
+    synchFa->term = malloc((synchFa->nbStates+1)*sizeof(int));
     synchFa->term[0] = 0;
     int final, j;
     for(int i = 1; i <= synchFa->nbStates; i++){

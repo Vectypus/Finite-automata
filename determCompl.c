@@ -137,7 +137,7 @@ FA* determCompl(FA* fa){
         i++;
     }
     // Find final states
-    detFa->term = malloc(detFa->nbStates*sizeof(int));
+    detFa->term = malloc((detFa->nbStates+1)*sizeof(int));
     detFa->term[0] = 0;
     int final, j;
     for(int i = 1; i <= detFa->nbStates; i++){

@@ -22,8 +22,8 @@ FA* readAutomaton(char* filename){
 	FILE* file = NULL;
 	file = fopen(filename, "r");
 	int nbTrans;
-	int s1, s2, t;
-	char c;
+	int s1, s2;
+	char t;
 
 	if(file != NULL){
 		// Read alphabet and states
@@ -56,9 +56,9 @@ FA* readAutomaton(char* filename){
 
 		// Initialize the table
 		fa->transTable = malloc((fa->nbStates+3)*sizeof(int**)); // Spaces for possible 'P' and 'i' states
-		for(int i = 0; i <= fa->nbStates+2; i++){
+		for(int i = 0; i < fa->nbStates+3; i++){
 			fa->transTable[i] = malloc((fa->nbAlpha+2)*sizeof(int*)); // Space for '*' trans
-			for(int j = 0; j <= fa->nbAlpha+1; j++){
+			for(int j = 0; j < fa->nbAlpha+2; j++){
 				fa->transTable[i][j] = malloc((fa->nbStates+1)*sizeof(int));
 				fa->transTable[i][j][0] = 0;
 			}
@@ -87,9 +87,9 @@ FA* readAutomaton(char* filename){
 				exit(1);
 			}
 			// Verify the transition from the text file
-			fscanf(file, "%c", &c);
-			if (c > 96+fa->nbAlpha || (c < 97 && c != 42)) {
-				printf("/!\\ Transition '%c' is not in the alphabet!\n", c);
+			fscanf(file, "%c", &t);
+			if (t > 96+fa->nbAlpha || (t < 97 && t != 42)) {
+				printf("/!\\ Transition '%c' is not in the alphabet!\n", t);
 				exit(1);
 			}
 			// Verify the target state(s) from the text file
@@ -98,10 +98,8 @@ FA* readAutomaton(char* filename){
 				printf("/!\\ Unknown target state '%d'!\n", s2);
 				exit(1);
 			}
-			t = c;
-			j = fa->transTable[searchLin(fa, s1)][searchCol(fa, t)][0] + 1;
-			fa->transTable[searchLin(fa, s1)][searchCol(fa, t)][j] = s2;
-			fa->transTable[searchLin(fa, s1)][searchCol(fa, t)][0]++;
+			j = ++fa->transTable[s1+1][searchCol(fa, t)][0];
+			fa->transTable[s1+1][searchCol(fa, t)][j] = s2;
 		}
 
 		fclose(file);
@@ -150,7 +148,7 @@ void displayAutomaton(FA* fa){
 		printf("\n\nTransition table:\n");
 		for(int i = 0; i <= fa->nbStates; i++){
 			for(int j = 0; j <= fa->nbAlpha+1; j++){
-				if(isAsynchronous(fa, 0) || j != fa->nbAlpha+1){
+				if(!(!isAsynchronous(fa, 0) && j == fa->nbAlpha+1)){
 					if(i == 0){
 						printf("%c ", fa->transTable[0][j][0]);
 					}
