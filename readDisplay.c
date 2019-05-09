@@ -112,73 +112,71 @@ FA* readAutomaton(char* filename){
 }
 
 void displayAutomaton(FA* fa){
-	if(fa){
-		printf("Initial states: ");
-		for(int i = 1; i <= fa->init[0]; i++){
-			for(int j = 1; j <= fa->transTable[fa->init[i]][0][0]; j++){
-				if(j == fa->transTable[fa->init[i]][0][0]){
-					if(fa->transTable[fa->init[i]][0][j] == -2)
-						printf("i");
-					else
-						printf("%d", fa->transTable[fa->init[i]][0][j]);
-				}
+	printf("Initial states: ");
+	for(int i = 1; i <= fa->init[0]; i++){
+		for(int j = 1; j <= fa->transTable[fa->init[i]][0][0]; j++){
+			if(j == fa->transTable[fa->init[i]][0][0]){
+				if(fa->transTable[fa->init[i]][0][j] == -2)
+					printf("i");
 				else
-					printf("%d.", fa->transTable[fa->init[i]][0][j]);
+					printf("%d", fa->transTable[fa->init[i]][0][j]);
 			}
-			printf(" ");
+			else
+				printf("%d.", fa->transTable[fa->init[i]][0][j]);
 		}
+		printf(" ");
+	}
 
-		printf("\nTerminal states: ");
-		for(int i = 1; i <= fa->term[0]; i++){
-			for(int j = 1; j <= fa->transTable[fa->term[i]][0][0]; j++){
-				if(j == fa->transTable[fa->term[i]][0][0]){
-					if(fa->transTable[fa->term[i]][0][j] == -1)
-						printf("P");
-					else if(fa->transTable[fa->term[i]][0][j] == -2)
-						printf("i");
-					else
-						printf("%d", fa->transTable[fa->term[i]][0][j]);
-				}
+	printf("\nTerminal states: ");
+	for(int i = 1; i <= fa->term[0]; i++){
+		for(int j = 1; j <= fa->transTable[fa->term[i]][0][0]; j++){
+			if(j == fa->transTable[fa->term[i]][0][0]){
+				if(fa->transTable[fa->term[i]][0][j] == -1)
+					printf("P");
+				else if(fa->transTable[fa->term[i]][0][j] == -2)
+					printf("i");
 				else
-					printf("%d.", fa->transTable[fa->term[i]][0][j]);
+					printf("%d", fa->transTable[fa->term[i]][0][j]);
 			}
-			printf(" ");
+			else
+				printf("%d.", fa->transTable[fa->term[i]][0][j]);
 		}
+		printf(" ");
+	}
 
-		printf("\n\nTransition table:\n");
-		for(int i = 0; i <= fa->nbStates; i++){
-			for(int j = 0; j <= fa->nbAlpha+1; j++){
-				if(!(!isAsynchronous(fa, 0) && j == fa->nbAlpha+1)){
-					if(i == 0){
-						printf("%c ", fa->transTable[0][j][0]);
+	printf("\n\nTransition table:\n");
+	for(int i = 0; i <= fa->nbStates; i++){
+		for(int j = 0; j <= fa->nbAlpha+1; j++){
+			if(!(!isAsynchronous(fa, 0) && j == fa->nbAlpha+1)){
+				if(i == 0){
+					printf("%c ", fa->transTable[0][j][0]);
+				}
+				else{
+					if(fa->transTable[i][j][0] == 0){
+						printf("-");
 					}
-					else{
-						if(fa->transTable[i][j][0] == 0){
-							printf("-");
+					for(int k = 1; k <= fa->transTable[i][j][0]; k++){
+						if(fa->transTable[i][j][k] == -1){
+							printf("P");
 						}
-						for(int k = 1; k <= fa->transTable[i][j][0]; k++){
-							if(fa->transTable[i][j][k] == -1){
-								printf("P");
-							}
-							else if(fa->transTable[i][j][k] == -2){
-								printf("i");
-							}
-							else if(!isAsynchronous(fa, 0) && isDeterministic(fa, 0)){
-								if(k == fa->transTable[i][j][0])
-									printf("%d", fa->transTable[i][j][k]);
-								else
-									printf("%d.", fa->transTable[i][j][k]);
-							}
-							else{
-								printf("%d ", fa->transTable[i][j][k]);
-							}
+						else if(fa->transTable[i][j][k] == -2){
+							printf("i");
+						}
+						else if(!isAsynchronous(fa, 0) && isDeterministic(fa, 0)){
+							if(k == fa->transTable[i][j][0])
+								printf("%d", fa->transTable[i][j][k]);
+							else
+								printf("%d.", fa->transTable[i][j][k]);
+						}
+						else{
+							printf("%d ", fa->transTable[i][j][k]);
 						}
 					}
 				}
-				printf("\t");
-				if(j == fa->nbAlpha+1){
-					printf("\n");
-				}
+			}
+			printf("\t");
+			if(j == fa->nbAlpha+1){
+				printf("\n");
 			}
 		}
 	}
