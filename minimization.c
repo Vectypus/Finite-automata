@@ -9,7 +9,12 @@ FA* minimize(FA* fa){
     }
 
     int** groups1 = malloc(fa->nbStates*sizeof(int*));
-    int nbGroups1 = 2; // T and NT
+    int nbGroups1;
+    if (fa->term[0] == fa->nbStates)
+        nbGroups1 = 1;
+    else
+        nbGroups1 = 2; // T and NT
+    
     for(int i = 0; i < fa->nbStates; i++){
         groups1[i] = malloc((fa->nbStates+1)*sizeof(int));
         groups1[i][0] = 0;
