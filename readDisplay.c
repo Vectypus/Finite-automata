@@ -31,7 +31,7 @@ FA* readAutomaton(char* filename){
 		fscanf(file, "%d", &fa->nbStates);
 
 		// Fill initial and terminal states
-		fa->init = malloc(fa->nbStates*sizeof(int));
+		fa->init = malloc((fa->nbStates+1)*sizeof(int));
 		fscanf(file, "%d", &fa->init[0]);
 		for(int i = 1; i <= fa->init[0]; i++){
 			// Verify the initial state(s) from the text file
@@ -42,7 +42,7 @@ FA* readAutomaton(char* filename){
 				exit(1);
 			}
 		}
-		fa->term = malloc(fa->nbStates*sizeof(int));
+		fa->term = malloc((fa->nbStates+1)*sizeof(int));
 		fscanf(file, "%d", &fa->term[0]);
 		for(int i = 1; i <= fa->term[0]; i++){
 			// Verify the final state(s) from the text file
