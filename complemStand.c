@@ -1,7 +1,7 @@
 #include "complemStand.h"
 
 FA* complementary(FA* fa){
-    int* nonTerm = malloc(fa->nbStates*sizeof(int));
+    int* nonTerm = malloc((fa->nbStates+1)*sizeof(int));
     nonTerm[0] = 0;
     // Find non terminal states
     for(int i = 1; i <= fa->nbStates; i++){
@@ -59,8 +59,6 @@ FA* standardize(FA* fa){
 
         // Set new initial state
         fa->init[1] = fa->nbStates;
-
-        return fa;
     }
     return fa;
 }

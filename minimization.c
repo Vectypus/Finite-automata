@@ -68,17 +68,33 @@ FA* minimize(FA* fa){
         minFa->nbStates = nbGroups1;
         minFa->nbAlpha = fa->nbAlpha;
 
-        // Fill the table
+        // Initialize the table
         minFa->transTable = malloc((minFa->nbStates+2)*sizeof(int**)); // Space for possible 'i'
         for(int i = 0; i < minFa->nbStates+2; i++){
             minFa->transTable[i] = malloc((minFa->nbAlpha+2)*sizeof(int*));
-            for(int j = 0; j < minFa->nbAlpha+2; j++){
-                minFa->transTable[i][j] = malloc((minFa->nbStates+1)*sizeof(int));
-                minFa->transTable[i][j][0] = 0;
-                if(j == 0 && i > 0){
+            if(i == 0 || i == minFa->nbStates+1){
+                for(int j = 0; j < minFa->nbAlpha+1; j++){
+                    minFa->transTable[i][j] = malloc((minFa->nbStates+1)*sizeof(int));
+                    minFa->transTable[i][j][0] = 0;
+                }
+            }
+            minFa->transTable[i][minFa->nbAlpha+1] = malloc(sizeof(int));
+            minFa->transTable[i][minFa->nbAlpha+1][0] = 0;
+        }
+
+        // Fill alphabet
+        for(int j = 1; j <= minFa->nbAlpha; j++){
+            minFa->transTable[0][j][0] = 96+j;
+        }
+        minFa->transTable[0][minFa->nbAlpha+1][0] = 42;
+
+        // Fill the table
+        for(int i = 1; i < minFa->nbStates+1; i++){
+            for(int j = 0; j < minFa->nbAlpha+1; j++){
+                if(!j){
                     minFa->transTable[i][0] = groups1[i-1];
                 }
-                else if(i > 0 && j > 0 && j < minFa->nbAlpha+1){
+                else{
                     int found = 0, group = 0;
                     while(!found){
                         for(int state = 1; state <= groups1[group][0]; state++){
@@ -92,12 +108,6 @@ FA* minimize(FA* fa){
                 }
             }
         }
-
-        // Fill alphabet
-        for(int i = 1; i <= minFa->nbAlpha; i++){
-            minFa->transTable[0][i][0] = 96+i;
-        }
-        minFa->transTable[0][minFa->nbAlpha+1][0] = 42;
 
         // Find initial and final states
         minFa->init = malloc(2*sizeof(int));

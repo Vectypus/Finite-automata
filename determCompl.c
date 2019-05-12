@@ -4,7 +4,7 @@
 int isAsynchronous(FA* fa, int disp){
     int asynch = 0;
     for(int i = 1; i <= fa->nbStates; i++){
-        if(fa->transTable[i][fa->nbAlpha+1][0] != 0){
+        if(fa->transTable[i][fa->nbAlpha+1][0]){
             if(!asynch){
                 asynch = 1;
                 if(disp)
@@ -89,9 +89,9 @@ FA* determCompl(FA* fa){
     // Initialize the table
     detFa->transTable = malloc((pow(2, fa->nbStates)+3)*sizeof(int**)); // 2^n: max number of states for the determinized
                                                                        // Spaces for possible 'P' and 'i'
-    for(int i = 0; i <= pow(2, fa->nbStates)+2; i++){
+    for(int i = 0; i < pow(2, fa->nbStates)+3; i++){
         detFa->transTable[i] = malloc((detFa->nbAlpha+2)*sizeof(int*));
-        for(int j = 0; j <= detFa->nbAlpha+1; j++){
+        for(int j = 0; j < detFa->nbAlpha+2; j++){
             detFa->transTable[i][j] = malloc((pow(2,fa->nbStates)+1)*sizeof(int));
             detFa->transTable[i][j][0] = 0;
         }
