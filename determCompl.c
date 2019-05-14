@@ -1,5 +1,6 @@
 #include "determCompl.h"
 #include <math.h>
+#include <string.h>
 
 int isAsynchronous(FA* fa, int disp){
     int asynch = 0;
@@ -131,7 +132,7 @@ FA* determCompl(FA* fa){
         for(int j = 1; j <= detFa->nbAlpha; j++){
             if(!existingState(detFa->transTable[i][j], detFa)){
                 detFa->nbStates++;
-                detFa->transTable[detFa->nbStates][0] = detFa->transTable[i][j];
+                intdup(detFa->transTable[detFa->nbStates][0], detFa->transTable[i][j], detFa->transTable[i][j][0]+1);
             }
         }
         i++;
@@ -210,4 +211,9 @@ int existingState(int* state, FA* fa){
         }
     }
     return 0;
+}
+
+void intdup(int* p, int const* src, size_t len)
+{
+   memcpy(p, src, len * sizeof(int));
 }

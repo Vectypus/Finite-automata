@@ -10,5 +10,6 @@ FA* determCompl(FA* fa);
 FA* complete(FA* fa);
 void sortArray(int* array);
 int existingState(int* state, FA* fa);
+void intdup(int* p, int const* src, size_t len);
 
 #endif

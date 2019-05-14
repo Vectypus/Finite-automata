@@ -203,12 +203,13 @@ void corresTable(FA* fa){
         for(int k = 1; k <= fa->transTable[i][0][0]; k++){
             if(fa->transTable[i][0][k] == -1)
                 printf("P");
-            else
+            else{
                 printf("%d", fa->transTable[i][0][k]);
-            if(k < fa->transTable[i][0][0])
-                printf(".");
-            else
-                printf("\n");
+                if(k < fa->transTable[i][0][0])
+                    printf(".");
+                else
+                    printf("\n");
+            }
         }
     }
     printf("\n");
