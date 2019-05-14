@@ -55,7 +55,7 @@ FA* standardize(FA* fa){
 
         // Already deterministic so one initial state
         for(int j = 1; j <= fa->nbAlpha; j++){
-            fa->transTable[fa->nbStates][j] = fa->transTable[fa->init[1]][j];
+            copyArray(fa->transTable[fa->nbStates][j], fa->transTable[fa->init[1]][j]);
         }
 
         // Set new initial state
