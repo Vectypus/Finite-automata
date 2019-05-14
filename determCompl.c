@@ -132,7 +132,7 @@ FA* determCompl(FA* fa){
         for(int j = 1; j <= detFa->nbAlpha; j++){
             if(!existingState(detFa->transTable[i][j], detFa)){
                 detFa->nbStates++;
-                intdup(detFa->transTable[detFa->nbStates][0], detFa->transTable[i][j], detFa->transTable[i][j][0]+1);
+                copyArray(detFa->transTable[detFa->nbStates][0], detFa->transTable[i][j]);
             }
         }
         i++;
@@ -213,7 +213,7 @@ int existingState(int* state, FA* fa){
     return 0;
 }
 
-void intdup(int* p, int const* src, size_t len)
+void copyArray(int* array2, int const* array1)
 {
-   memcpy(p, src, len * sizeof(int));
+   memcpy(array2, array1, (array1[0]+1) * sizeof(int));
 }

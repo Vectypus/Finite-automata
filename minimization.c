@@ -77,14 +77,10 @@ FA* minimize(FA* fa){
         minFa->transTable = malloc((minFa->nbStates+2)*sizeof(int**)); // Space for possible 'i'
         for(int i = 0; i < minFa->nbStates+2; i++){
             minFa->transTable[i] = malloc((minFa->nbAlpha+2)*sizeof(int*));
-            if(i == 0 || i == minFa->nbStates+1){
-                for(int j = 0; j < minFa->nbAlpha+1; j++){
-                    minFa->transTable[i][j] = malloc((minFa->nbStates+1)*sizeof(int));
-                    minFa->transTable[i][j][0] = 0;
-                }
+            for(int j = 0; j < minFa->nbAlpha+2; j++){
+                minFa->transTable[i][j] = malloc((minFa->nbStates+1)*sizeof(int));
+                minFa->transTable[i][j][0] = 0;
             }
-            minFa->transTable[i][minFa->nbAlpha+1] = malloc(sizeof(int));
-            minFa->transTable[i][minFa->nbAlpha+1][0] = 0;
         }
 
         // Fill alphabet
@@ -95,21 +91,17 @@ FA* minimize(FA* fa){
 
         // Fill the table
         for(int i = 1; i < minFa->nbStates+1; i++){
-            for(int j = 0; j < minFa->nbAlpha+1; j++){
-                if(!j){
-                    minFa->transTable[i][0] = groups1[i-1];
-                }
-                else{
-                    int found = 0, group = 0;
-                    while(!found){
-                        for(int state = 1; state <= groups1[group][0]; state++){
-                            if(groups1[group][state] == searchState(fa->transTable[minFa->transTable[i][0][1]+1][j],fa)-1){
-                                found = 1;
-                                minFa->transTable[i][j] = groups1[group];
-                            }
+            minFa->transTable[i][0] = groups1[i-1];
+            for(int j = 1; j < minFa->nbAlpha+1; j++){
+                int found = 0, group = 0;
+                while(!found){
+                    for(int state = 1; state <= groups1[group][0]; state++){
+                        if(groups1[group][state] == searchState(fa->transTable[minFa->transTable[i][0][1]+1][j],fa)-1){
+                            found = 1;
+                            copyArray(minFa->transTable[i][j], groups1[group]);
                         }
-                        group++;
                     }
+                    group++;
                 }
             }
         }
