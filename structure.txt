@@ -1,0 +1,22 @@
+Structure fa:
+    transTable: 3D array
+    nbStates: int
+    nbAlpha: int
+    init: array
+    term: array
+
+example 36:
+
+transTable =
+[0]     [a]     [b]     [*]
+[1,0]   [1,1]   [2,1,2] [0]
+[1,1]   [0]     [2,0,2] [0]
+[1,2]   [2,0,1] [0]     [0]
+
+nbStates = 3
+nbAlpha = 2
+init = [2,0,2]
+term = [2,1,2]
+
+determCompl(fa):
+    detFa<-initFa()

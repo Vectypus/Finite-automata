@@ -152,6 +152,8 @@ FA* determCompl(FA* fa){
             j++;
         }
     }
+
+    free(fa);
     // Complete
     if(!isComplete(detFa)){
         complete(detFa);

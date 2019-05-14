@@ -61,6 +61,8 @@ int main(){
                 printf("Word to test: ");
                 scanf("%s", word);
             }
+
+            freeFa(complstdfa);
         }
         else{
             printf("This automaton doesn't exist.\n");

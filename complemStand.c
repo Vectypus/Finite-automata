@@ -11,6 +11,7 @@ FA* complementary(FA* fa){
         }
     }
     // Set new terminal states to previous non terminal
+    free(fa->term);
     fa->term = nonTerm;
 
     return fa;

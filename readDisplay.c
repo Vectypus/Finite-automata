@@ -224,3 +224,21 @@ int recognizeWord(char* word, FA* fa){
 	printf("No\n");
 	return 0;
 }
+
+void freeFa(FA* fa){
+	for(int i = 0; i <= fa->nbStates; i++){
+		for(int j = 0; j <= fa->nbAlpha+1; j++){
+			if(fa->transTable[i][j]){
+				free(fa->transTable[i][j]);
+				fa->transTable[i][j] = NULL;
+			}
+		}
+		free(fa->transTable[i]);
+	}
+	free(fa->transTable);
+
+	free(fa->init);
+	free(fa->term);
+	free(fa);
+	fa = NULL;
+}

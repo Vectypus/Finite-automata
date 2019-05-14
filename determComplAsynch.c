@@ -85,6 +85,7 @@ FA* determComplAsynch(FA* fa){
 
     displayAutomaton(synchFa);
     FA* detFa = determCompl(synchFa);
+    freeFa(fa);
 
     return detFa;
 }

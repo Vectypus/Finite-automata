@@ -11,5 +11,6 @@ void displayAutomaton(FA* fa);
 int searchState(int* state, FA* fa);
 int inArray(int x, int* array);
 int recognizeWord(char* word, FA* fa);
+void freeFa(FA* fa);
 
 #endif

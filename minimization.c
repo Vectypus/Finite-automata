@@ -128,6 +128,7 @@ FA* minimize(FA* fa){
             }
         }
 
+        freeFa(fa);
         return minFa;
     }
 }
