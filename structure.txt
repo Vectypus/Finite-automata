@@ -1,22 +1,16 @@
-Structure fa:
-    transTable: 3D array
-    nbStates: int
-    nbAlpha: int
-    init: array
-    term: array
-
-example 36:
-
-transTable =
-[0]     [a]     [b]     [*]
-[1,0]   [1,1]   [2,1,2] [0]
-[1,1]   [0]     [2,0,2] [0]
-[1,2]   [2,0,1] [0]     [0]
-
-nbStates = 3
-nbAlpha = 2
-init = [2,0,2]
-term = [2,1,2]
-
 determCompl(fa):
-    detFa<-initFa()
+    detFa <- initFa()    // Allocation...
+    add(1,detFa.init)
+    detFa.transTable[1][0] = fa.init
+    while(state):
+        for each char:
+            detFa.transTable[state][char] = transitions(fa,state,char)
+            if(notExistingState(detFa.transTable[state][char])):
+                createState(detFa.transTable[state][char])
+    for each state:
+        for each t in fa.term:
+            if fa.term[t] in detFa.transTable[state]
+                add(state,detFa.term)
+    if(notComplete(detFa)):
+        complete(detFa)
+    return detFa
