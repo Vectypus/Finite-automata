@@ -31,7 +31,11 @@ FA* minimize(FA* fa){
         }
     }
 
-    displayGroups(groups1, nbGroups1);
+    printf("\n*** Minimization process ***\n");
+    corresTable(fa);
+    int step = 0;
+    displayGroups(groups1, nbGroups1, &step);
+    displayTrans(fa, groups1, nbGroups1);
 
     int l, found;
     while(nbGroups0 != nbGroups1){
@@ -56,7 +60,8 @@ FA* minimize(FA* fa){
             }
             l = nbGroups1; // not to mix groups
         }
-        displayGroups(groups1, nbGroups1);
+        displayGroups(groups1, nbGroups1, &step);
+        displayTrans(fa, groups1, nbGroups1);
     }
 
     if(nbGroups1 == fa->nbStates){
@@ -164,8 +169,8 @@ void initGroups(int** groups0, int* nbGroups0, int** groups1, int* nbGroups1){
     }
 }
 
-void displayGroups(int** groups, int nbGroups){
-    printf("{");
+void displayGroups(int** groups, int nbGroups, int* step){
+    printf("t%d = {", (*step)++);
     for(int i = 0; i < nbGroups; i++){
         printf("(");
         for(int j = 1; j <= groups[i][0]; j++){
@@ -174,4 +179,37 @@ void displayGroups(int** groups, int nbGroups){
         printf("), ");
     }
     printf("}\n");
+}
+
+void displayTrans(FA* fa, int** groups, int nbGroups){
+    for(int j = 1; j <= fa->nbAlpha; j++){
+        printf("\t%c", 96+j);
+    }
+    printf("\n");
+
+    for(int i = 1; i <= fa->nbStates; i++){
+        printf("%d\t", i-1);
+        for(int j = 1; j <= fa->nbAlpha; j++){
+            printf("G%d\t", findGroup(fa, fa->transTable[i][j], groups, nbGroups));
+        }
+        printf("\n");
+    }
+}
+
+void corresTable(FA* fa){
+    printf("Table of correspondence:\n");
+    for(int i = 1; i <= fa->nbStates; i++){
+        printf("%d -> ", i-1);
+        for(int k = 1; k <= fa->transTable[i][0][0]; k++){
+            if(fa->transTable[i][0][k] == -1)
+                printf("P");
+            else
+                printf("%d", fa->transTable[i][0][k]);
+            if(k < fa->transTable[i][0][0])
+                printf(".");
+            else
+                printf("\n");
+        }
+    }
+    printf("\n");
 }

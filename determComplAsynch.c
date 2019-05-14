@@ -83,6 +83,7 @@ FA* determComplAsynch(FA* fa){
         }
     }
 
+    printf("\n*** Synchronous automaton ***\n");
     displayAutomaton(synchFa);
     FA* detFa = determCompl(synchFa);
     freeFa(fa);
