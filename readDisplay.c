@@ -212,6 +212,10 @@ int recognizeWord(char* word, FA* fa){
 	if(word[i] != '*'){
 		while(word[i] != '\0'){
 			t = word[i];
+			if(t < 'a' || t > 'a'+fa->nbAlpha-1){
+				printf("A character is not in the alphabet of this automaton.\n");
+				return 0;
+			}
 			curr = searchState(fa->transTable[curr][searchCol(fa, t)], fa);
 			i++;
 		}
