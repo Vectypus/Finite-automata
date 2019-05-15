@@ -213,7 +213,8 @@ int existingState(int* state, FA* fa){
     return 0;
 }
 
-void copyArray(int* array2, int const* array1)
-{
-   memcpy(array2, array1, (array1[0]+1) * sizeof(int));
+void copyArray(int* array2, int* array1){
+    for(int i = 0; i <= array1[0]; i++){
+        array2[i] = array1[i];
+    }
 }

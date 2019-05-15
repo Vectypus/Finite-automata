@@ -10,6 +10,6 @@ FA* determCompl(FA* fa);
 FA* complete(FA* fa);
 void sortArray(int* array);
 int existingState(int* state, FA* fa);
-void copyArray(int* array2, int const* array1);
+void copyArray(int* array2, int* array1);
 
 #endif

@@ -78,7 +78,7 @@ FA* minimize(FA* fa){
         for(int i = 0; i < minFa->nbStates+2; i++){
             minFa->transTable[i] = malloc((minFa->nbAlpha+2)*sizeof(int*));
             for(int j = 0; j < minFa->nbAlpha+2; j++){
-                minFa->transTable[i][j] = malloc((minFa->nbStates+1)*sizeof(int));
+                minFa->transTable[i][j] = malloc((fa->nbStates+1)*sizeof(int));
                 minFa->transTable[i][j][0] = 0;
             }
         }
@@ -90,9 +90,9 @@ FA* minimize(FA* fa){
         minFa->transTable[0][minFa->nbAlpha+1][0] = 42;
 
         // Fill the table
-        for(int i = 1; i < minFa->nbStates+1; i++){
-            minFa->transTable[i][0] = groups1[i-1];
-            for(int j = 1; j < minFa->nbAlpha+1; j++){
+        for(int i = 1; i <= minFa->nbStates; i++){
+            copyArray(minFa->transTable[i][0],groups1[i-1]);
+            for(int j = 1; j <= minFa->nbAlpha; j++){
                 int found = 0, group = 0;
                 while(!found){
                     for(int state = 1; state <= groups1[group][0]; state++){
