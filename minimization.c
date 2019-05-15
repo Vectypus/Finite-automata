@@ -91,18 +91,10 @@ FA* minimize(FA* fa){
 
         // Fill the table
         for(int i = 1; i <= minFa->nbStates; i++){
-            copyArray(minFa->transTable[i][0],groups1[i-1]);
+            copyArray(minFa->transTable[i][0], groups1[i-1]);
             for(int j = 1; j <= minFa->nbAlpha; j++){
-                int found = 0, group = 0;
-                while(!found){
-                    for(int state = 1; state <= groups1[group][0]; state++){
-                        if(groups1[group][state] == searchState(fa->transTable[minFa->transTable[i][0][1]+1][j],fa)-1){
-                            found = 1;
-                            copyArray(minFa->transTable[i][j], groups1[group]);
-                        }
-                    }
-                    group++;
-                }
+                int group = findGroup(fa, fa->transTable[minFa->transTable[i][0][1]+1][j], groups1, minFa->nbStates);
+                copyArray(minFa->transTable[i][j], groups1[group]);
             }
         }
 
