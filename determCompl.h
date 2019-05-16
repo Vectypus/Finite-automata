@@ -5,7 +5,7 @@
 
 int isAsynchronous(FA* fa, int disp);
 int isDeterministic(FA* fa, int disp);
-int isComplete(FA* fa);
+int isComplete(FA* fa, int disp);
 FA* determCompl(FA* fa);
 FA* complete(FA* fa);
 void sortArray(int* array);

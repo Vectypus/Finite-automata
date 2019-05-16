@@ -20,7 +20,7 @@ int main(){
                 cdfa = determComplAsynch(fa);
             else{
                 if(isDeterministic(fa, 1)){
-                    if(isComplete(fa))
+                    if(isComplete(fa, 1))
                         cdfa = fa;
                     else
                         cdfa = complete(fa);
