@@ -64,7 +64,8 @@ determComplAsynch(fa):
     for each state:
         if target(fa.transTable[state][0]) or state in fa.init:
             Add state to synchStates
-    closures(synchStates, fa)
+    closures(synchStates, fa) /* Recursion to find all accessiblestates
+                                 with '*'-transitions for each synchState */
     synchFa <- initFa()
     for i <- 1 to nb(synchStates):
         synchFa.transTable[i][0] <- synchStates[i][0]
