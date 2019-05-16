@@ -1,16 +1,142 @@
+readAutomaton(file):
+    fa <- initFa()    // Allocation and initialization
+    fa.nbAlpha <- read(file)
+    fa.nbStates <- read(file)
+    fa.init[0] <- read(file)    // Contains nbInit
+    for i <- 1 to fa.init[0]:
+        fa.init[i] <- read(file)+1  // Contains the line number
+    fa.term[0] <- read(file)
+    for i <- 1 to fa.term[0]:
+        fa.term[i] <- read(file)+1
+    // Fill states
+    for i <- 1 to fa.nbStates:
+        fa.transTable[i][0] <- i-1    // Starts at 0
+    // Fill transitions
+    nbTrans <- read(file)
+    for i <- 1 to nbTrans:
+        src <- read(file)
+        char <- read(file)
+        dest <- read(file)
+        Add dest to fa.transTable[src+1][char]
+    return fa
+
+displayAutomaton(fa):
+    write("Initial states: ")
+    for i <- 1 to fa.init[0]:
+        write(fa.transTable[fa.init[i]][0])
+    write("Terminal states: ")
+    for i <- 1 to fa.term[0]:
+        write(fa.transTable[fa.term[i]][0])
+    write("Transition table: ")
+    for i <- 0 to fa.nbStates:
+        for j <- 0 to fa.nbAlpha+1:
+            if not(isSynchronous(fa) and j = fa.nbAlpha+1):
+                write(fa.transTable[i][j])
+
 determCompl(fa):
-    detFa <- initFa()    // Allocation...
-    add(1,detFa.init)
+    detFa <- initFa()   // Allocation and initialization
+    Add 1 to detFa.init
     detFa.transTable[1][0] = fa.init
-    while(state):
+    state <- 1
+    while detFa.transTable[state][0]:
         for each char:
-            detFa.transTable[state][char] = transitions(fa,state,char)
+            detFa.transTable[state][char] <- transitions(state,fa,char)
             if(notExistingState(detFa.transTable[state][char])):
                 createState(detFa.transTable[state][char])
+        state++
     for each state:
-        for each t in fa.term:
-            if fa.term[t] in detFa.transTable[state]
-                add(state,detFa.term)
-    if(notComplete(detFa)):
+        if one fa.term in detFa.transTable[state]
+            Add state to detFa.term
+    if notComplete(detFa):
         complete(detFa)
     return detFa
+
+complete(fa):
+    createState(P)
+    for each state:
+        for each char:
+            if fa.transTable[state][char] = 0:
+                fa.transTable[state][char] <- P
+    return fa
+
+determComplAsynch(fa):
+    // synchStates: 2D array
+    for each state:
+        if target(fa.transTable[state][0]) or state in fa.init:
+            Add state to synchStates
+    closures(synchStates, fa)
+    synchFa <- initFa()
+    for i <- 1 to nb(synchStates):
+        synchFa.transTable[i][0] <- synchStates[i][0]
+    for each state in synchFa:
+        if state in fa.init:
+            add(state,synchFa.init)
+    for each state in synchFa:
+        for each char:
+            for each closure in synchStates[state]:
+                Add transitions(synchStates[state][closure],fa,char) to synchFa.transTable[state][char]
+    for each state in synchFa:
+        if one fa.term in synchStates[state]:
+            Add state to synchFa.term
+    detFa <- determCompl(synchFa)
+    return detFa
+
+minimize(fa):
+    groups0[0] <- 0
+    groups1[0] <- fa.term
+    groups1[1] <- notTerm(fa)
+    while size(groups0) != size(groups1):
+        groups0 <- groups1
+        groups1 <- 0
+        limit <- 0
+        for each group in groups0:
+            for each state in group:
+                for i <- limit to nb(groups1):
+                    if sameTrans(groups0[group][state], groups1[i]):
+                        Add groups0[group][state] to groups1[i]
+                    else:    // Not found
+                        newGroup(groups0[group][state], groups1)
+            limit <- nb(groups1)    // Limit not to mix groups
+    if size(groups1 = fa.nbStates):
+        return fa
+    else:
+        minFa <- initFa()
+        fillStates(groups1)
+        for each state:
+            for each char:
+                minFa.transTable[state][char] <- groups1[findGroup(fa, minFa.transTable[state][0])]
+                if fa.init in minFa.transTable[state][0]:
+                    Add state to minFa.init
+                if one fa.term in minFa.transTable[state][0]:
+                    Add state to minFa.term
+        return minFa
+
+recognizeWord(word, fa):
+    curr <- fa.init
+    if word != '*':
+        for char in word:
+            if char < 'a' or char >= 'a'+fa.nbAlpha:
+                return 0    // char not in the alphabet
+            curr <- fa.transTable[curr][char]
+    if curr in fa.term:
+        return 1    // Recognized
+    else:
+        return 0    // Not recognized
+
+complementary(fa):
+    // nonTerm: array
+    for each state:
+        if state not in fa.term:
+            Add state to nonTerm
+    fa.term <- nonTerm
+    return fa
+
+standardize(fa):
+    if notStandard(fa):
+        createState(i)
+        if recognizeWord("*", fa):
+            Add i to fa.term
+        for each char:
+            fa.transTable[i][char] <- fa.transTable[fa.init][char]
+        fa.init <- init
+    return fa
