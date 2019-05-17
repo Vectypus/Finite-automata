@@ -7,19 +7,21 @@ FA* determComplAsynch(FA* fa){
         synchStates[i] = malloc((fa->nbStates+1)*sizeof(int));
         synchStates[i][0] = 0;
     }
+    // Add initial states
     for(int i = 1; i <= fa->init[0]; i++){
         synchStates[0][0]++;
         synchStates[0][i] = fa->init[i]-1;
     }
     int nb = 1;
     for(int i = 1; i <= fa->nbStates; i++){
+        // Add targets of non '*'-transition
         if(!inArray(fa->transTable[i][0][1], synchStates[0]) && target(fa->transTable[i][0][1], fa)){
             synchStates[nb][0]++;
             synchStates[nb][1] = fa->transTable[i][0][1];
             nb++;
         }
     }
-    // Make '*'-closures
+    // Make '*'-closures (states reachable with '*'-transitions)
     for(int i = 0; i < nb; i++){
         closures(synchStates[i], fa);
     }
@@ -52,11 +54,13 @@ FA* determComplAsynch(FA* fa){
 
     // Import states and transitions
     for(int i = 1; i <= synchFa->nbStates; i++){
+        // Add state
         synchFa->transTable[i][0][0]++;
         synchFa->transTable[i][0][1] = synchStates[i-1][1];
         for(int j = 1; j <= synchFa->nbAlpha; j++){
             for(int k = 1; k <= synchStates[i-1][0]; k++){
                 for(int l = 1; l <= fa->transTable[searchLin(fa, synchStates[i-1][k])][j][0]; l++){
+                    // Add transitions of closures if they are not already in it
                     if(!inArray(fa->transTable[searchLin(fa, synchStates[i-1][k])][j][l], synchFa->transTable[i][j])){
                         int nb = ++synchFa->transTable[i][j][0];
                         synchFa->transTable[i][j][nb] = fa->transTable[searchLin(fa, synchStates[i-1][k])][j][l];
@@ -74,6 +78,7 @@ FA* determComplAsynch(FA* fa){
         final = 0;
         j = 1;
         while(j <= fa->term[0] && !final){
+            // Terminal if one original terminal state in the closure
             if(inArray(fa->term[j]-1, synchStates[i-1])){
                 final = 1;
                 synchFa->term[0]++;
@@ -94,6 +99,7 @@ FA* determComplAsynch(FA* fa){
 int target(int x, FA* fa){
     for(int i = 1; i <= fa->nbStates; i++){
         for(int j = 1; j <= fa->nbAlpha; j++){
+            // x is a target if it is in a transition (excluding '*')
             if(inArray(x, fa->transTable[i][j]))
                 return 1;
         }
@@ -103,10 +109,12 @@ int target(int x, FA* fa){
 
 void closures(int* array, FA* fa){
     int nb = 0;
+    // Stop when no more closure found
     while(array[0] != nb){
         nb = array[0];
         for(int i = 1; i <= nb; i++){
             for(int j = 1; j <= fa->transTable[searchLin(fa, array[i])][fa->nbAlpha+1][0]; j++){
+                // Add states reachable with '*'-transitions from states already in the array
                 if(!inArray(fa->transTable[searchLin(fa, array[i])][fa->nbAlpha+1][j], array)){
                     array[0]++;
                     array[array[0]] = fa->transTable[searchLin(fa, array[i])][fa->nbAlpha+1][j];

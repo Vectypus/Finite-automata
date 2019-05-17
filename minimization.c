@@ -22,10 +22,13 @@ FA* minimize(FA* fa){
     // Groups at t0
     for(int i = 1; i <= fa->nbStates; i++){
         if(inArray(i, fa->term)){
+            // Terminal states
             groups1[0][0]++;
-            groups1[0][groups1[0][0]] = i-1;
+            groups1[0][groups1[0][0]] = i-1; /* Renaming states with line number
+                                                for simplicity */
         }
         else{
+            // Non terminal states
             groups1[1][0]++;
             groups1[1][groups1[1][0]] = i-1;
         }
@@ -38,32 +41,34 @@ FA* minimize(FA* fa){
     displayTrans(fa, groups1, nbGroups1);
 
     int l, found;
-    while(nbGroups0 != nbGroups1){
+    while(nbGroups0 != nbGroups1){ // Stop condition for minimization
         initGroups(groups0, &nbGroups0, groups1, &nbGroups1);
         l = 0;
+        // Create groups1 from groups0
         for(int i = 0; i < nbGroups0; i++){
             for(int j = 1; j <= groups0[i][0]; j++){
                 found = 0;
                 for(int k = l; k < nbGroups1; k++){
+                    // Add to the group if same transitions
                     if(sameTrans(fa, groups0[i][j], groups1[k][1], groups0, nbGroups0)){
-                        // Add to group
                         found = 1;
                         groups1[k][0]++;
                         groups1[k][groups1[k][0]] = groups0[i][j];
                     }
                 }
-                if(!found){ // Create new group
+                // Create new group if no group with same transitions found
+                if(!found){
                     groups1[nbGroups1][0]++;
                     groups1[nbGroups1][1] = groups0[i][j];
                     nbGroups1++;
                 }
             }
-            l = nbGroups1; // not to mix groups
+            l = nbGroups1; // not to mix with other groups
         }
         displayGroups(groups1, nbGroups1, &step);
         displayTrans(fa, groups1, nbGroups1);
     }
-
+    // If same number of states as the original fa
     if(nbGroups1 == fa->nbStates){
         printf("Already minimal\n");
         return fa;
@@ -91,8 +96,10 @@ FA* minimize(FA* fa){
 
         // Fill the table
         for(int i = 1; i <= minFa->nbStates; i++){
+            // Add state (one group)
             copyArray(minFa->transTable[i][0], groups1[i-1]);
             for(int j = 1; j <= minFa->nbAlpha; j++){
+                // Add group corresponding to the transition in the original fa
                 int group = findGroup(fa, fa->transTable[minFa->transTable[i][0][1]+1][j], groups1, minFa->nbStates);
                 copyArray(minFa->transTable[i][j], groups1[group]);
             }
@@ -102,15 +109,15 @@ FA* minimize(FA* fa){
         minFa->init = malloc(2*sizeof(int));
         minFa->init[0] = 1;
         for(int i = 1; i <= minFa->nbStates; i++){
-            for(int j = 1; j <= minFa->transTable[i][0][0]; j++){
-                if(fa->init[1]-1 == minFa->transTable[i][0][j])
-                    minFa->init[1] = i;
-            }
+            // Initial if original initial state in the state
+            if(inArray(fa->init[1]-1, minFa->transTable[i][0]))
+                minFa->init[1] = i;
         }
 
         minFa->term = malloc((fa->term[0]+1)*sizeof(int));
         minFa->term[0] = 0;
         for(int i = 1; i <= minFa->nbStates; i++){
+            // Final if state composed of original final state(s)
             if(inArray(minFa->transTable[i][0][1]+1, fa->term)){
                 minFa->term[0]++;
                 minFa->term[minFa->term[0]] = i;
@@ -135,6 +142,7 @@ int findGroup(FA* fa, int* state, int** groups, int nbGroups){
 
 int sameTrans(FA* fa, int s1, int s2, int** groups, int nbGroups){
     for(int i = 1; i <= fa->nbAlpha; i++){
+        // Compare transitions in terms of groups for each char
         if(findGroup(fa, fa->transTable[s1+1][i], groups, nbGroups) != 
            findGroup(fa, fa->transTable[s2+1][i], groups, nbGroups))
             return 0;

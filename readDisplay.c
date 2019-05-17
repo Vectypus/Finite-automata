@@ -73,7 +73,7 @@ FA* readAutomaton(char* filename){
 		// Fill states
 		for(int i = 1; i <= fa->nbStates; i++){
 			fa->transTable[i][0][0]++;
-			fa->transTable[i][0][1] = i-1;
+			fa->transTable[i][0][1] = i-1; // Begins at 0
 		}
 
 		// Fill transitions
@@ -98,6 +98,7 @@ FA* readAutomaton(char* filename){
 				printf("/!\\ Unknown target state '%d'!\n", s2);
 				exit(1);
 			}
+			// Add the transition to the transTable
 			j = ++fa->transTable[s1+1][searchCol(fa, t)][0];
 			fa->transTable[s1+1][searchCol(fa, t)][j] = s2;
 		}
@@ -105,6 +106,7 @@ FA* readAutomaton(char* filename){
 		fclose(file);
 	}
 	else{
+		// Can't read the fa
 		fa = NULL;
 	}
 
@@ -216,12 +218,13 @@ int recognizeWord(char* word, FA* fa){
 				printf("'%c' is not in the alphabet of this automaton.\n", t);
 				return 0;
 			}
+			// Go to next state
 			curr = searchState(fa->transTable[curr][searchCol(fa, t)], fa);
 			i++;
 		}
 	}
 
-	if(inArray(curr, fa->term)){
+	if(inArray(curr, fa->term)){ // Ends in a terminal state
 		printf("Yes\n");
 		return 1;
 	}

@@ -10,8 +10,8 @@ FA* complementary(FA* fa){
             nonTerm[nonTerm[0]] = i;
         }
     }
-    // Set new terminal states to previous non terminal
     free(fa->term);
+    // Set terminal states to original non terminal
     fa->term = nonTerm;
 
     return fa;
@@ -46,20 +46,20 @@ FA* standardize(FA* fa){
     if(!isStandard(fa)){
         fa->nbStates++;
         fa->transTable[fa->nbStates][0][0]++;
-        fa->transTable[fa->nbStates][0][1] = -2;
-
+        fa->transTable[fa->nbStates][0][1] = -2; // -2 is i
+        // if '*' recognized, i is terminal
         if(recognizeWord("*", fa)){
             fa->term[0]++;
             fa->term[fa->term[0]] = fa->nbStates;
         }
 
-        // Already deterministic so one initial state
         for(int j = 1; j <= fa->nbAlpha; j++){
+            // Copy transitions of original initial state
             copyArray(fa->transTable[fa->nbStates][j], fa->transTable[fa->init[1]][j]);
         }
 
         // Set new initial state
-        fa->init[1] = fa->nbStates;
+        fa->init[1] = fa->nbStates; // line number of i
     }
     return fa;
 }
