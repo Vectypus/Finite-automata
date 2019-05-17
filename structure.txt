@@ -69,13 +69,16 @@ determComplAsynch(fa):
     synchFa <- initFa()
     for i <- 1 to nb(synchStates):
         synchFa.transTable[i][0] <- synchStates[i][0]
+    // Initial states
     for each state in synchFa:
         if state in fa.init:
-            add(state,synchFa.init)
+            Add state to synchFa.init
     for each state in synchFa:
         for each char:
             for each closure in synchStates[state]:
-                Add transitions(synchStates[state][closure],fa,char) to synchFa.transTable[state][char]
+                Add transitions(synchStates[state][closure],fa,char)
+                to synchFa.transTable[state][char]
+    // Terminal states
     for each state in synchFa:
         if one fa.term in synchStates[state]:
             Add state to synchFa.term
@@ -86,7 +89,7 @@ minimize(fa):
     groups0[0] <- 0
     groups1[0] <- fa.term
     groups1[1] <- notTerm(fa)
-    while size(groups0) != size(groups1):
+    while nb(groups0) != nb(groups1):
         groups0 <- groups1
         groups1 <- 0
         limit <- 0
@@ -98,7 +101,7 @@ minimize(fa):
                     else:    // Not found
                         newGroup(groups0[group][state], groups1)
             limit <- nb(groups1)    // Limit not to mix groups
-    if size(groups1 = fa.nbStates):
+    if nb(groups1) = fa.nbStates:
         return fa
     else:
         minFa <- initFa()
@@ -139,5 +142,5 @@ standardize(fa):
             Add i to fa.term
         for each char:
             fa.transTable[i][char] <- fa.transTable[fa.init][char]
-        fa.init <- init
+        fa.init <- i
     return fa
