@@ -151,7 +151,7 @@ FA* determCompl(FA* fa){
         j = 1;
         while(j <= fa->term[0] && !final){
             // Terminal if one original terminal state in a state
-            if(inArray(fa->term[j]-1, detFa->transTable[i][0])){
+            if(inArray(fa->transTable[fa->term[j]][0][1], detFa->transTable[i][0])){
                 final = 1;
                 detFa->term[0]++;
                 detFa->term[detFa->term[0]] = i;
